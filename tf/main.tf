@@ -184,18 +184,16 @@ module "hub" {
     cluster-1 = module.cluster.id
   }
   
-  # features = {
-  #   appdevexperience             = false
-  #   configmanagement             = false
-  #   identityservice              = false
-  #   multiclusteringress          = null
-  #   servicemesh                  = true
-  #   multiclusterservicediscovery = false
-  # }
+  features = {
+    appdevexperience             = false
+    configmanagement             = false
+    identityservice              = false
+    multiclusteringress          = null
+    servicemesh                  = false
+    multiclusterservicediscovery = false
+  }
   
-  workload_identity_clusters = [
-    "cluster-1"
-  ]
+  workload_identity_clusters = []
 
   configmanagement_templates = {
     default = {
