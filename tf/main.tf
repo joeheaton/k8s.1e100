@@ -174,3 +174,62 @@ module "nodepool-1" {
   node_tags                   = null
   node_taints                 = []
 }
+
+module "hub" {
+  source     = "./fabric/modules/gke-hub"
+  project_id = module.project.project_id
+  
+  clusters = { 
+    cluster-1 = module.cluster.id
+  }
+  
+  # features = {
+  #   appdevexperience             = false
+  #   configmanagement             = false
+  #   identityservice              = false
+  #   multiclusteringress          = null
+  #   servicemesh                  = true
+  #   multiclusterservicediscovery = false
+  # }
+  
+  workload_identity_clusters = [
+    "cluster-1"
+  ]
+
+  configmanagement_templates = {
+    default = {
+      binauthz = false
+      config_sync = {
+        git = {
+          gcp_service_account_email = null
+          https_proxy               = null
+          policy_dir                = "configsync"
+          secret_type               = "none"
+          source_format             = "hierarchy"
+          sync_branch               = "main"
+          sync_repo                 = "https://github.com/joeheaton/k8s.1e100"
+          sync_rev                  = null
+          sync_wait_secs            = null
+        }
+        prevent_drift = false
+        source_format = "hierarchy"
+      }
+      # hierarchy_controller = {
+      #   enable_hierarchical_resource_quota = true
+      #   enable_pod_tree_labels             = true
+      # }
+      # policy_controller = {
+      #   audit_interval_seconds     = 120
+      #   exemptable_namespaces      = []
+      #   log_denies_enabled         = true
+      #   referential_rules_enabled  = true
+      #   template_library_installed = true
+      # }
+      version = "v1"
+    }
+  }
+
+  configmanagement_clusters = {
+    "default" = [ "cluster-1" ]
+  }
+}
