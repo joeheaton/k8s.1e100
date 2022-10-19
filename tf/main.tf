@@ -176,6 +176,7 @@ module "nodepool-1" {
 }
 
 module "hub" {
+  count        = try(local.vars.hub, null) != null ? 0 : 1
   source     = "./fabric/modules/gke-hub"
   project_id = module.project.project_id
   
