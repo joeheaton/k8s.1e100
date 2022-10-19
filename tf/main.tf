@@ -214,17 +214,17 @@ module "hub" {
         prevent_drift = false
         source_format = "hierarchy"
       }
-      # hierarchy_controller = {
-      #   enable_hierarchical_resource_quota = true
-      #   enable_pod_tree_labels             = true
-      # }
-      # policy_controller = {
-      #   audit_interval_seconds     = 120
-      #   exemptable_namespaces      = []
-      #   log_denies_enabled         = true
-      #   referential_rules_enabled  = true
-      #   template_library_installed = true
-      # }
+      hierarchy_controller = {
+        enable_hierarchical_resource_quota = true
+        enable_pod_tree_labels             = true
+      }
+      policy_controller = {
+        audit_interval_seconds     = 120
+        exemptable_namespaces      = []
+        log_denies_enabled         = true
+        referential_rules_enabled  = true
+        template_library_installed = true
+      }
       version = "v1"
     }
   }
