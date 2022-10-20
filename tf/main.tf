@@ -69,7 +69,7 @@ module "cluster" {
   # node_locations = []
 
   # Conflicts with autopilot  
-  cluster_autoscaling = try(local.vars.autopilot, null) != null ? null : {
+  cluster_autoscaling = try(local.vars.gke.autopilot, null) != null ? null : {
     cpu_limits = {
       max = 4
       min = 1
@@ -97,7 +97,7 @@ module "cluster" {
       kalm = false
       network_policy = false
     },
-    try(local.vars.autopilot, null) != null ? {
+    try(local.vars.gke.autopilot, null) != null ? {
       gce_persistent_disk_csi_driver = true
       gcp_filestore_csi_driver = false
       horizontal_pod_autoscaling = true
@@ -106,14 +106,14 @@ module "cluster" {
   )
 
   enable_features = {
-    autopilot         = local.vars.autopilot
+    autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
-    workload_identity = try(local.vars.autopilot, null) != null ? false : true  # Incompatible with autopilot
+    workload_identity = try(local.vars.gke.autopilot, null) != null ? false : true  # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
   logging_config = distinct(concat(
-    try(local.vars.autopilot, null) != null ? [ "SYSTEM_COMPONENTS", "WORKLOADS" ] : [],
+    try(local.vars.gke.autopilot, null) != null ? [ "SYSTEM_COMPONENTS", "WORKLOADS" ] : [],
     [ "SYSTEM_COMPONENTS", "WORKLOADS" ]
   ))
   
@@ -143,7 +143,7 @@ module "cluster" {
 
 # Autopilot does not support mutating nodepools
 module "nodepool-1" {
-  count        = try(local.vars.autopilot, null) != null ? 0 : 1
+  count        = try(local.vars.gke.autopilot, null) != null ? 0 : 1
   source       = "./fabric/modules/gke-nodepool"
   project_id   = local.vars.project
   cluster_name = module.cluster.name
@@ -176,7 +176,7 @@ module "nodepool-1" {
 }
 
 module "hub" {
-  count        = try(local.vars.hub, null) != null ? 0 : 1
+  count      = try(local.vars.gke.hub, null) != null ? 0 : 1
   source     = "./fabric/modules/gke-hub"
   project_id = module.project.project_id
   
