@@ -12,6 +12,8 @@ k8s:
     secondary_ip_range:
       pods: "10.130.0.0/16"
       services: "10.132.0.0/24"
+  config_sync:
+    enabled: true
 # Google Kubernetes Engine
 gke:
   autopilot: true
