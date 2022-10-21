@@ -37,6 +37,35 @@ module "vpc" {
   ]
 }
 
+module "iap_bastion" {
+  count  = try(local.vars.k8s.bastion, null) != null ? 0 : 1
+  source = "terraform-google-modules/bastion-host/google"
+
+  project = local.vars.project
+  zone    = local.vars.zone
+  network = module.vpc.network.self_link
+  subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
+
+  preemptible   = true
+  image_project	= "ubuntu-os-cloud"
+  image_family  = "ubuntu-minimal-2204-lts"
+
+  # members = [
+  #   "group:devs@example.com",
+  # ]
+
+  startup_script = <<-EOF
+    apt-get install -y tinyproxy
+    sed -ri 's|^(Allow 127\.0\.0\.1$)|\1\nAllow localhost|g' /etc/tinyproxy/tinyproxy.conf
+    systemctl restart tinyproxy
+  EOF
+}
+
+output "iap_bastion_ip" {
+  value = module.iap_bastion.ip_address
+  description = "IAP Bastion IP address"
+}
+
 module "cluster" {
   source      = "./fabric/modules/gke-cluster"
   project_id  = local.vars.project
