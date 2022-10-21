@@ -12,15 +12,23 @@ module "project" {
   billing_account = local.vars.billing_account_id
   name            = local.vars.project
   parent          = local.vars.parent_id
-  services = [
-    "anthosconfigmanagement.googleapis.com",
-    "container.googleapis.com",
-    "gkeconnect.googleapis.com",
-    "gkehub.googleapis.com",
-    "multiclusteringress.googleapis.com",
-    "multiclusterservicediscovery.googleapis.com",
-    "mesh.googleapis.com"
-  ]
+  services = distinct(concat(
+    local.vars.k8s.bastion == true ? [
+      "compute.googleapis.com",
+      "iap.googleapis.com",
+      "oslogin.googleapis.com",
+      "storage-api.googleapis.com"
+    ] : [],
+    [
+      "anthosconfigmanagement.googleapis.com",
+      "container.googleapis.com",
+      "gkeconnect.googleapis.com",
+      "gkehub.googleapis.com",
+      "multiclusteringress.googleapis.com",
+      "multiclusterservicediscovery.googleapis.com",
+      "mesh.googleapis.com"
+    ]
+  ))
 }
 
 module "vpc" {
