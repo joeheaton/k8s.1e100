@@ -5,12 +5,14 @@ region: europe-west1
 zone: europe-west1-b
 billing_account_id: ABC123-ABC123-ABC123
 parent_id: "folders/123456789123"
-# K8S/GKE
-subnets:
-  ip_cidr_range: "10.128.0.0/24"
-  secondary_ip_range:
-    pods: "10.130.0.0/16"
-    services: "10.132.0.0/24"
+# Kubernetes
+k8s:
+  subnets:
+    ip_cidr_range: "10.128.0.0/24"
+    secondary_ip_range:
+      pods: "10.130.0.0/16"
+      services: "10.132.0.0/24"
+# Google Kubernetes Engine
 gke:
   autopilot: true
   hub: false

@@ -32,7 +32,7 @@ module "vpc" {
       ip_cidr_range = local.vars.subnets.ip_cidr_range
       name          = "gke"
       region        = local.vars.region
-      secondary_ip_range = local.vars.subnets.secondary_ip_range
+      secondary_ip_range = local.vars.k8s.subnets.secondary_ip_range
     }
   ]
 }
