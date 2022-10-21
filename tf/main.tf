@@ -67,9 +67,15 @@ module "iap_bastion" {
   # ]
 
   startup_script = <<-EOF
+    apt-get update
+    # Install TinyProxy
     apt-get install -y tinyproxy
     sed -ri 's|^(Allow 127\.0\.0\.1$)|\1\nAllow localhost|g' /etc/tinyproxy/tinyproxy.conf
     systemctl restart tinyproxy
+    # Allow SSH port forwarding
+    echo "AllowTCPForwarding yes" >> /etc/ssh/sshd_config
+    echo "GatewayPorts yes" >> /etc/ssh/sshd_config
+    systemctl reload sshd
   EOF
 }
 
