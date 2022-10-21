@@ -57,6 +57,7 @@ module "iap_bastion" {
   subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
 
   service_account_name = "k8s-bastion-${local.suffix}"
+  machine_type = "e2-micro"
   preemptible   = true
   image_project	= "ubuntu-os-cloud"
   image_family  = "ubuntu-minimal-2204-lts"
