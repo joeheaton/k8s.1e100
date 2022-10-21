@@ -51,9 +51,12 @@ module "iap_bastion" {
 
   project = local.vars.project
   zone    = local.vars.zone
+  name    = "k8s-bastion-${local.suffix}"
+  name_prefix = "k8s-bastion-${local.suffix}-tmpl"
   network = module.vpc.network.self_link
   subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
 
+  service_account_name = "k8s-bastion-${local.suffix}"
   preemptible   = true
   image_project	= "ubuntu-os-cloud"
   image_family  = "ubuntu-minimal-2204-lts"
@@ -69,9 +72,9 @@ module "iap_bastion" {
   EOF
 }
 
-output "iap_bastion_ip" {
-  value = module.iap_bastion.ip_address
-  description = "IAP Bastion IP address"
+output "iap_bastion_hostname" {
+  value = module.iap_bastion[0].hostname
+  description = "IAP Bastion IP hostname"
 }
 
 module "cluster" {
