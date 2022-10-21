@@ -46,7 +46,7 @@ module "vpc" {
 }
 
 module "iap_bastion" {
-  count  = try(local.vars.k8s.bastion, null) != null ? 0 : 1
+  count  = local.vars.k8s.bastion == true ? 1 : 0
   source = "terraform-google-modules/bastion-host/google"
 
   project = local.vars.project
@@ -106,7 +106,7 @@ module "cluster" {
   # node_locations = []
 
   # Conflicts with autopilot  
-  cluster_autoscaling = try(local.vars.gke.autopilot, null) != null ? null : {
+  cluster_autoscaling = local.vars.gke.autopilot == true ? null : {
     cpu_limits = {
       max = 4
       min = 1
@@ -145,12 +145,12 @@ module "cluster" {
   enable_features = {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
-    workload_identity = try(local.vars.gke.autopilot, null) != null ? false : true # Incompatible with autopilot
+    workload_identity = local.vars.gke.autopilot == true ? false : true # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
   logging_config = distinct(concat(
-    try(local.vars.gke.autopilot, null) != null ? ["SYSTEM_COMPONENTS", "WORKLOADS"] : [],
+    local.vars.gke.autopilot == true ? ["SYSTEM_COMPONENTS", "WORKLOADS"] : [],
     ["SYSTEM_COMPONENTS", "WORKLOADS"]
   ))
 
@@ -180,7 +180,7 @@ module "cluster" {
 
 # Autopilot does not support mutating nodepools
 module "nodepool-1" {
-  count        = try(local.vars.gke.autopilot, null) != null ? 0 : 1
+  count        = local.vars.gke.autopilot == false ? 1 : 0
   source       = "./fabric/modules/gke-nodepool"
   project_id   = local.vars.project
   cluster_name = module.cluster.name
@@ -213,7 +213,7 @@ module "nodepool-1" {
 }
 
 module "hub" {
-  count      = try(local.vars.gke.hub, null) != null ? 0 : 1
+  count      = local.vars.gke.hub == true ? 1 : 0
   source     = "./fabric/modules/gke-hub"
   project_id = module.project.project_id
 
