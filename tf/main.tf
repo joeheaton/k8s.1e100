@@ -29,7 +29,7 @@ module "vpc" {
   name       = "${local.vars.name}-vpc-${local.suffix}"
   subnets = [
     {
-      ip_cidr_range      = local.vars.subnets.ip_cidr_range
+      ip_cidr_range      = local.vars.k8s.subnets.ip_cidr_range
       name               = "gke"
       region             = local.vars.region
       secondary_ip_range = local.vars.k8s.subnets.secondary_ip_range
