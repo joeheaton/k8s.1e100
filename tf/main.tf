@@ -51,8 +51,8 @@ module "iap_bastion" {
 
   project = local.vars.project
   zone    = local.vars.zone
-  name    = "k8s-bastion-${local.suffix}"
-  name_prefix = "k8s-bastion-${local.suffix}-tmpl"
+  # name    = "k8s-bastion-${local.suffix}"
+  # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
   network = module.vpc.network.self_link
   subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
 
