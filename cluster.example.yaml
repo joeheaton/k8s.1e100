@@ -19,3 +19,4 @@ k8s:
 gke:
   autopilot: true
   hub: false
+firewall_rules: {}

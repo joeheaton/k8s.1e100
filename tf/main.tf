@@ -46,6 +46,14 @@ module "vpc" {
   ]
 }
 
+module "firewall" {
+  count        = local.vars.firewall_rules == {} ? 0 : 1
+  source       = "./fabric/modules/net-vpc-firewall"
+  project_id   = local.vars.project
+  network      = module.vpc.name
+  custom_rules = local.vars.firewall_rules
+}
+
 module "nat" {
   source         = "./fabric/modules/net-cloudnat"
   project_id     = local.vars.project
