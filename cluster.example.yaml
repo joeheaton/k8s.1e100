@@ -19,4 +19,8 @@ k8s:
 gke:
   autopilot: true
   hub: false
+sql:
+  tier: "db-f1-micro"
+  version: "POSTGRESQL_14"
+  flags: {}
 firewall_rules: {}
