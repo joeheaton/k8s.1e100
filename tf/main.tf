@@ -45,6 +45,14 @@ module "vpc" {
   ]
 }
 
+module "nat" {
+  source         = "./fabric/modules/net-cloudnat"
+  project_id     = local.vars.project
+  region         = local.vars.region
+  name           = "${local.vars.name}-nat-${local.suffix}"
+  router_network = module.vpc.name
+}
+
 module "iap_bastion" {
   count  = local.vars.k8s.bastion == true ? 1 : 0
   source = "terraform-google-modules/bastion-host/google"
