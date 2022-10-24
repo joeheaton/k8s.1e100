@@ -12,15 +12,23 @@ module "project" {
   billing_account = local.vars.billing_account_id
   name            = local.vars.project
   parent          = local.vars.parent_id
-  services = [
-    "anthosconfigmanagement.googleapis.com",
-    "container.googleapis.com",
-    "gkeconnect.googleapis.com",
-    "gkehub.googleapis.com",
-    "multiclusteringress.googleapis.com",
-    "multiclusterservicediscovery.googleapis.com",
-    "mesh.googleapis.com"
-  ]
+  services = distinct(concat(
+    local.vars.k8s.bastion == true ? [
+      "compute.googleapis.com",
+      "iap.googleapis.com",
+      "oslogin.googleapis.com",
+      "storage-api.googleapis.com"
+    ] : [],
+    [
+      "anthosconfigmanagement.googleapis.com",
+      "container.googleapis.com",
+      "gkeconnect.googleapis.com",
+      "gkehub.googleapis.com",
+      "multiclusteringress.googleapis.com",
+      "multiclusterservicediscovery.googleapis.com",
+      "mesh.googleapis.com"
+    ]
+  ))
 }
 
 module "vpc" {
@@ -35,6 +43,54 @@ module "vpc" {
       secondary_ip_range = local.vars.k8s.subnets.secondary_ip_range
     }
   ]
+}
+
+module "nat" {
+  source         = "./fabric/modules/net-cloudnat"
+  project_id     = local.vars.project
+  region         = local.vars.region
+  name           = "${local.vars.name}-nat-${local.suffix}"
+  router_network = module.vpc.name
+}
+
+module "iap_bastion" {
+  count  = local.vars.k8s.bastion == true ? 1 : 0
+  source = "terraform-google-modules/bastion-host/google"
+  version = "~>5.0.1"
+
+  project = local.vars.project
+  zone    = local.vars.zone
+  # name    = "k8s-bastion-${local.suffix}"
+  # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
+  network = module.vpc.network.self_link
+  subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
+
+  service_account_name = "k8s-bastion-${local.suffix}"
+  machine_type = "e2-micro"
+  preemptible   = true
+  image_project	= "ubuntu-os-cloud"
+  image_family  = "ubuntu-minimal-2204-lts"
+
+  # members = [
+  #   "group:devs@example.com",
+  # ]
+
+  startup_script = <<-EOF
+    apt-get update
+    # Install TinyProxy
+    apt-get install -y tinyproxy
+    sed -ri 's|^(Allow 127\.0\.0\.1$)|\1\nAllow localhost|g' /etc/tinyproxy/tinyproxy.conf
+    systemctl restart tinyproxy
+    # Allow SSH port forwarding
+    echo "AllowTCPForwarding yes" >> /etc/ssh/sshd_config
+    echo "GatewayPorts yes" >> /etc/ssh/sshd_config
+    systemctl reload sshd
+  EOF
+}
+
+output "iap_bastion_hostname" {
+  value = module.iap_bastion[0].hostname
+  description = "IAP Bastion IP hostname"
 }
 
 module "cluster" {
@@ -69,7 +125,7 @@ module "cluster" {
   # node_locations = []
 
   # Conflicts with autopilot  
-  cluster_autoscaling = try(local.vars.gke.autopilot, null) != null ? null : {
+  cluster_autoscaling = local.vars.gke.autopilot == true ? null : {
     cpu_limits = {
       max = 4
       min = 1
@@ -108,12 +164,12 @@ module "cluster" {
   enable_features = {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
-    workload_identity = try(local.vars.gke.autopilot, null) != null ? false : true # Incompatible with autopilot
+    workload_identity = local.vars.gke.autopilot == true ? false : true # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
   logging_config = distinct(concat(
-    try(local.vars.gke.autopilot, null) != null ? ["SYSTEM_COMPONENTS", "WORKLOADS"] : [],
+    local.vars.gke.autopilot == true ? ["SYSTEM_COMPONENTS", "WORKLOADS"] : [],
     ["SYSTEM_COMPONENTS", "WORKLOADS"]
   ))
 
@@ -143,7 +199,7 @@ module "cluster" {
 
 # Autopilot does not support mutating nodepools
 module "nodepool-1" {
-  count        = try(local.vars.gke.autopilot, null) != null ? 0 : 1
+  count        = local.vars.gke.autopilot == false ? 1 : 0
   source       = "./fabric/modules/gke-nodepool"
   project_id   = local.vars.project
   cluster_name = module.cluster.name
@@ -176,7 +232,7 @@ module "nodepool-1" {
 }
 
 module "hub" {
-  count      = try(local.vars.gke.hub, null) != null ? 0 : 1
+  count      = local.vars.gke.hub == true ? 1 : 0
   source     = "./fabric/modules/gke-hub"
   project_id = module.project.project_id
 

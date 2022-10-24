@@ -7,6 +7,7 @@ billing_account_id: ABC123-ABC123-ABC123
 parent_id: "folders/123456789123"
 # Kubernetes
 k8s:
+  bastion: true
   subnets:
     ip_cidr_range: "10.128.0.0/24"
     secondary_ip_range:
