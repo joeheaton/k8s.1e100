@@ -12,6 +12,7 @@ module "project" {
   billing_account = local.vars.billing_account_id
   name            = local.vars.project
   parent          = local.vars.parent_id
+  project_create  = local.vars.project_create
   services = distinct(concat(
     local.vars.k8s.bastion == true ? [
       "compute.googleapis.com",
