@@ -48,6 +48,7 @@ module "vpc" {
 module "iap_bastion" {
   count  = local.vars.k8s.bastion == true ? 1 : 0
   source = "terraform-google-modules/bastion-host/google"
+  version = "~>5.0.1"
 
   project = local.vars.project
   zone    = local.vars.zone
