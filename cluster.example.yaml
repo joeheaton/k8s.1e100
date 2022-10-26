@@ -1,26 +1,34 @@
 ---
 name: my-cluster
 project: my-project
+project_create: true
 region: europe-west1
 zone: europe-west1-b
 billing_account_id: ABC123-ABC123-ABC123
 parent_id: "folders/123456789123"
 # Kubernetes
 k8s:
+  # IAP Bastion VM
   bastion: true
+  # Network
   subnets:
     ip_cidr_range: "10.128.0.0/24"
     secondary_ip_range:
       pods: "10.130.0.0/16"
       services: "10.132.0.0/24"
+  # Config Sync
   config_sync:
     enabled: true
 # Google Kubernetes Engine
 gke:
+  # GKE Autopilot
   autopilot: true
+  # GKE Anthos Config Management
   hub: false
 sql:
-  tier: "db-f1-micro"
-  version: "POSTGRESQL_14"
-  flags: {}
+  psql:
+    tier: "db-f1-micro"
+    version: "POSTGRESQL_14"
+    availability_type: "ZONAL"
+    flags: {}
 firewall_rules: {}
