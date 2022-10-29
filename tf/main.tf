@@ -7,6 +7,11 @@ resource "random_id" "suffix" {
   byte_length = 2
 }
 
+output "suffix" {
+  value       = local.suffix
+  description = "Suffix."
+}
+
 module "project" {
   source          = "./fabric/modules/project"
   billing_account = local.vars.billing_account_id
