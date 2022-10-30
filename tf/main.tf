@@ -68,10 +68,9 @@ module "nat" {
 }
 
 module "iap_bastion" {
-  count  = local.vars.k8s.bastion == true ? 1 : 0
-  source = "terraform-google-modules/bastion-host/google"
+  count   = local.vars.k8s.bastion == true ? 1 : 0
+  source  = "terraform-google-modules/bastion-host/google"
   version = "~>5.0.1"
-
   project = local.vars.project
   zone    = local.vars.zone
   # name    = "k8s-bastion-${local.suffix}"
@@ -80,10 +79,14 @@ module "iap_bastion" {
   subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
 
   service_account_name = "k8s-bastion-${local.suffix}"
-  machine_type = "e2-micro"
+
+  machine_type  = "e2-micro"
   preemptible   = true
   image_project	= "ubuntu-os-cloud"
   image_family  = "ubuntu-minimal-2204-lts"
+  labels        = {
+    deployment  = local.vars.name
+  }
 
   # members = [
   #   "group:devs@example.com",
@@ -207,6 +210,7 @@ module "cluster" {
   }
 
   labels = {
+    deployment  = local.vars.name
     environment = "dev"
   }
 }
