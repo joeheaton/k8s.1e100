@@ -1,5 +1,6 @@
 # Ops Agent on all VMs
 module "ops_agent_policy" {
+  count      = local.vars.gke.ops_agent == true ? 1 : 0
   source     = "terraform-google-modules/cloud-operations/google//modules/agent-policy"
   version    = "~> 0.2.3"
 
