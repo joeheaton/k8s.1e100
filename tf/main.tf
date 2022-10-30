@@ -73,24 +73,25 @@ module "iap_bastion" {
   version = "~>5.0.1"
   project = local.vars.project
   zone    = local.vars.zone
-  # name    = "k8s-bastion-${local.suffix}"
-  # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
   network = module.vpc.network.self_link
   subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
 
-  service_account_name = "k8s-bastion-${local.suffix}"
-
+  # name        = "k8s-bastion-${local.suffix}"
+  # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
+  image_family  = "ubuntu-minimal-2204-lts"
+  image_project	= "ubuntu-os-cloud"
   machine_type  = "e2-micro"
   preemptible   = true
-  image_project	= "ubuntu-os-cloud"
-  image_family  = "ubuntu-minimal-2204-lts"
-  labels        = {
-    deployment  = local.vars.name
-  }
+
+  service_account_name = "k8s-bastion-${local.suffix}"
 
   # members = [
   #   "group:devs@example.com",
   # ]
+
+  labels        = {
+    deployment  = local.vars.name
+  }
 
   startup_script = <<-EOF
     apt-get update
