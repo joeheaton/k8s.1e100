@@ -230,29 +230,35 @@ module "nodepool-1" {
   location     = local.vars.region
   name         = "nodepool-1"
 
-  initial_node_count = 1
-  autoscaling_config = {
-    min_node_count = 1
-    max_node_count = 3
+  node_count = {
+    initial = local.vars.k8s.node_count.initial
+    current = local.vars.gke.autopilot == true ? null : local.vars.k8s.node_count.current
   }
 
-  # kubelet_config = {
-  #   cpu_cfs_quota        = ""
-  #   cpu_cfs_quota_period = ""
-  #   cpu_manager_policy   = ""
-  # }
-
-  node_disk_size              = 100
-  node_disk_type              = "pd-standard"
-  node_guest_accelerator      = {}
-  node_local_ssd_count        = 0
-  node_machine_type           = "n1-standard-1"
-  node_preemptible            = true
-  node_service_account_create = true
-  node_service_account_scopes = []
-  node_spot                   = true
-  node_tags                   = null
-  node_taints                 = []
+  node_config = {
+    boot_disk_kms_key = null
+    disk_size_gb = 100
+    disk_type = "pd-standard"
+    ephemeral_ssd_count = 0
+    gcfs = null
+    guest_accelerator = null
+    gvnic = local.vars.gke.gvnic
+    image_type = null
+    kubelet_config = null
+    linux_node_config_sysctls = {}
+    local_ssd_count = 0
+    machine_type = null
+    metadata = {}
+    min_cpu_platform = null
+    preemptible = true
+    sandbox_config_gvisor = null
+    shielded_instance_config = {
+      enable_integrity_monitoring = false
+      enable_secure_boot = false
+    }
+    spot = true
+    workload_metadata_config_mode = null
+  }
 }
 
 module "hub" {
