@@ -191,6 +191,11 @@ module "cluster" {
     ["SYSTEM_COMPONENTS", "WORKLOADS"]
   ))
 
+  monitoring_config = {
+    enabled_components = ["SYSTEM_COMPONENTS"]
+    managed_prometheus = local.vars.gke.prometheus ? true : false
+  }
+
   maintenance_config = {
     daily_window_start_time = "03:00"
 

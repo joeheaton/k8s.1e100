@@ -25,6 +25,10 @@ gke:
   autopilot: true
   # GKE Anthos Config Management
   hub: false
+  # Managed Prometheus
+  prometheus: true
+  # Ops Agent
+  ops_agent: false
 sql:
   psql:
     tier: "db-f1-micro"
