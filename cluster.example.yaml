@@ -25,6 +25,8 @@ gke:
   autopilot: true
   # Anthos Config Management
   config_sync: false
+  # GVNic
+  gvnic: true
   # Anthos Fleet Management
   hub: false
   # Managed Prometheus
