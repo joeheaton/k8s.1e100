@@ -285,7 +285,7 @@ module "hub" {
     default = {
       binauthz = false
       config_sync = {
-        git = {
+        git = local.vars.gke.config_sync ? {
           gcp_service_account_email = null
           https_proxy               = null
           policy_dir                = "configsync"
@@ -293,6 +293,16 @@ module "hub" {
           source_format             = "hierarchy"
           sync_branch               = "main"
           sync_repo                 = "https://github.com/joeheaton/k8s.1e100"
+          sync_rev                  = null
+          sync_wait_secs            = null
+        } : {
+          gcp_service_account_email = null
+          https_proxy               = null
+          policy_dir                = null
+          secret_type               = null
+          source_format             = null
+          sync_branch               = null
+          sync_repo                 = null
           sync_rev                  = null
           sync_wait_secs            = null
         }

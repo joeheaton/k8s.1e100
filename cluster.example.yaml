@@ -23,7 +23,9 @@ k8s:
 gke:
   # GKE Autopilot
   autopilot: true
-  # GKE Anthos Config Management
+  # Anthos Config Management
+  config_sync: false
+  # Anthos Fleet Management
   hub: false
   # Managed Prometheus
   prometheus: true
