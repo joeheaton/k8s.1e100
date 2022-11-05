@@ -3,6 +3,11 @@ locals {
   suffix = random_id.suffix.hex
 }
 
+output "suffix" {
+  value       = local.suffix
+  description = "Unique resource suffix."
+}
+
 resource "random_id" "suffix" {
   byte_length = 2
 }
