@@ -39,4 +39,6 @@ sql:
     version: "POSTGRESQL_14"
     availability_type: "ZONAL"
     flags: {}
-firewall_rules: {}
+firewall:
+  egress: {}
+  ingress: {}
