@@ -23,8 +23,16 @@ k8s:
 gke:
   # GKE Autopilot
   autopilot: true
-  # GKE Anthos Config Management
+  # Anthos Config Management
+  config_sync: false
+  # GVNic
+  gvnic: true
+  # Anthos Fleet Management
   hub: false
+  # Managed Prometheus
+  prometheus: true
+  # Ops Agent
+  ops_agent: false
 sql:
   psql:
     tier: "db-f1-micro"

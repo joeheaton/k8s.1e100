@@ -12,6 +12,11 @@ resource "random_id" "suffix" {
   byte_length = 2
 }
 
+output "suffix" {
+  value       = local.suffix
+  description = "Suffix."
+}
+
 module "project" {
   source          = "./fabric/modules/project"
   billing_account = local.vars.billing_account_id
@@ -68,26 +73,30 @@ module "nat" {
 }
 
 module "iap_bastion" {
-  count  = local.vars.k8s.bastion == true ? 1 : 0
-  source = "terraform-google-modules/bastion-host/google"
+  count   = local.vars.k8s.bastion == true ? 1 : 0
+  source  = "terraform-google-modules/bastion-host/google"
   version = "~>5.0.1"
-
   project = local.vars.project
   zone    = local.vars.zone
-  # name    = "k8s-bastion-${local.suffix}"
-  # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
   network = module.vpc.network.self_link
   subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
 
-  service_account_name = "k8s-bastion-${local.suffix}"
-  machine_type = "e2-micro"
-  preemptible   = true
-  image_project	= "ubuntu-os-cloud"
+  # name        = "k8s-bastion-${local.suffix}"
+  # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
   image_family  = "ubuntu-minimal-2204-lts"
+  image_project	= "ubuntu-os-cloud"
+  machine_type  = "e2-micro"
+  preemptible   = true
+
+  service_account_name = "k8s-bastion-${local.suffix}"
 
   # members = [
   #   "group:devs@example.com",
   # ]
+
+  labels        = {
+    deployment  = local.vars.name
+  }
 
   startup_script = <<-EOF
     apt-get update
@@ -187,6 +196,11 @@ module "cluster" {
     ["SYSTEM_COMPONENTS", "WORKLOADS"]
   ))
 
+  monitoring_config = {
+    enabled_components = ["SYSTEM_COMPONENTS"]
+    managed_prometheus = local.vars.gke.prometheus ? true : false
+  }
+
   maintenance_config = {
     daily_window_start_time = "03:00"
 
@@ -207,6 +221,7 @@ module "cluster" {
   }
 
   labels = {
+    deployment  = local.vars.name
     environment = "dev"
   }
 }
@@ -220,29 +235,35 @@ module "nodepool-1" {
   location     = local.vars.region
   name         = "nodepool-1"
 
-  initial_node_count = 1
-  autoscaling_config = {
-    min_node_count = 1
-    max_node_count = 3
+  node_count = {
+    initial = local.vars.k8s.node_count.initial
+    current = local.vars.gke.autopilot == true ? null : local.vars.k8s.node_count.current
   }
 
-  # kubelet_config = {
-  #   cpu_cfs_quota        = ""
-  #   cpu_cfs_quota_period = ""
-  #   cpu_manager_policy   = ""
-  # }
-
-  node_disk_size              = 100
-  node_disk_type              = "pd-standard"
-  node_guest_accelerator      = {}
-  node_local_ssd_count        = 0
-  node_machine_type           = "n1-standard-1"
-  node_preemptible            = true
-  node_service_account_create = true
-  node_service_account_scopes = []
-  node_spot                   = true
-  node_tags                   = null
-  node_taints                 = []
+  node_config = {
+    boot_disk_kms_key = null
+    disk_size_gb = 100
+    disk_type = "pd-standard"
+    ephemeral_ssd_count = 0
+    gcfs = null
+    guest_accelerator = null
+    gvnic = local.vars.gke.gvnic
+    image_type = null
+    kubelet_config = null
+    linux_node_config_sysctls = {}
+    local_ssd_count = 0
+    machine_type = null
+    metadata = {}
+    min_cpu_platform = null
+    preemptible = true
+    sandbox_config_gvisor = null
+    shielded_instance_config = {
+      enable_integrity_monitoring = false
+      enable_secure_boot = false
+    }
+    spot = true
+    workload_metadata_config_mode = null
+  }
 }
 
 module "hub" {
@@ -269,7 +290,7 @@ module "hub" {
     default = {
       binauthz = false
       config_sync = {
-        git = {
+        git = local.vars.gke.config_sync ? {
           gcp_service_account_email = null
           https_proxy               = null
           policy_dir                = "configsync"
@@ -277,6 +298,16 @@ module "hub" {
           source_format             = "hierarchy"
           sync_branch               = "main"
           sync_repo                 = "https://github.com/joeheaton/k8s.1e100"
+          sync_rev                  = null
+          sync_wait_secs            = null
+        } : {
+          gcp_service_account_email = null
+          https_proxy               = null
+          policy_dir                = null
+          secret_type               = null
+          source_format             = null
+          sync_branch               = null
+          sync_repo                 = null
           sync_rev                  = null
           sync_wait_secs            = null
         }

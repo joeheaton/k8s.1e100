@@ -8,23 +8,22 @@ Copy `cluster.example.yaml` to `cluster.yaml`
 
 Setting `autopilot` to true sets/overrides settings that are required for a GKE Autopilot cluster.
 
-## Deploy
-
-Deploy the cluster
+## Deployment
 
 ```shell
 cd tf/
-terraform init
 terraform apply
 ```
 
-Environment variables required for `gcloud` and proxying `kubectl`:
+Export helper variables locally:
 
 ```shell
-export CLUSTER_NAME="$( yq eval '.name' cluster.yaml )-$( cd tf/; terraform output -json | jq -r '.suffix.value' )" \
-PROJECT_ID="$( yq eval '.project' cluster.yaml )" \
-ZONE="$( yq eval '.zone' cluster.yaml )" \
-REGION="$( yq eval '.region' cluster.yaml )"
+TF_SUFFIX="$( terraform output -json | jq -r '.suffix.value' )"
+CLUSTER_NAME="$( yq '.name' ../cluster.yaml )-${TF_SUFFIX}"
+PROJECT_ID="$( yq '.project' ../cluster.yaml )"
+REGION="$( yq '.region' ../cluster.yaml )"
+ZONE="$( yq '.zone' ../cluster.yaml )"
+BASTION="$( terraform output -json | jq -r '.iap_bastion_hostname.value' )"
 ```
 
 ## Bastion
@@ -37,8 +36,9 @@ https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastio
 
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
-gcloud compute ssh bastion-vm --tunnel-through-iap --project=$PROJECT_ID --zone=$ZONE -- -4 -L8888:localhost:8888 -N -q -f
+gcloud compute ssh $BASTION --tunnel-through-iap --project=$PROJECT_ID --zone=$ZONE -- -4 -L8888:localhost:8888 -N -q -f
 HTTPS_PROXY=localhost:8888 kubectl get ns
 ```
 
-INSTANCE_NAME is output by Terraform under "iap_bastion_hostname".
+BASTION is output by Terraform under "iap_bastion_hostname".
+
