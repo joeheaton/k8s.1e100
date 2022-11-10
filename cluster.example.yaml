@@ -19,6 +19,9 @@ k8s:
   # Config Sync
   config_sync:
     enabled: true
+  # Node count
+  node_count:
+    initial: 1
 # Google Kubernetes Engine
 gke:
   # GKE Autopilot
@@ -39,4 +42,6 @@ sql:
     version: "POSTGRESQL_14"
     availability_type: "ZONAL"
     flags: {}
-firewall_rules: {}
+firewall:
+  egress: {}
+  ingress: {}
