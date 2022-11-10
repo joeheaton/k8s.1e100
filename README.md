@@ -26,6 +26,24 @@ ZONE="$( yq '.zone' ../cluster.yaml )"
 BASTION="$( terraform output -json | jq -r '.iap_bastion_hostname.value' )"
 ```
 
+Install Flux CD CLI:
+
+```shell
+curl -s https://fluxcd.io/install.sh | sudo bash
+```
+
+Provision Flux CD:
+
+[Flux installation docs](https://fluxcd.io/flux/installation/)
+
+```shell
+flux bootstrap github \
+  --owner=GITHUB_OWNER \
+  --repository=GITHUB_REPO_NAME \
+  --path=PATH_TO_CONFIGSYNC \
+  --personal
+```
+
 ## Bastion
 
 Bastion nodes are required for kubectl to access a private cluster from outside the VPC network.
