@@ -8,6 +8,12 @@ Copy `cluster.example.yaml` to `cluster.yaml`
 
 Setting `autopilot` to true sets/overrides settings that are required for a GKE Autopilot cluster.
 
+## Prepare
+
+```shell
+git clone --depth 1 --branch daily-2022.11.11 https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git tf/fabric
+```
+
 ## Deployment
 
 ```shell
