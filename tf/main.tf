@@ -108,7 +108,7 @@ module "iap_bastion" {
 }
 
 output "iap_bastion_hostname" {
-  value = module.iap_bastion[0].hostname
+  value = module.iap_bastion == [] ? null : module.iap_bastion[0].hostname
   description = "IAP Bastion IP hostname"
 }
 
