@@ -44,9 +44,9 @@ module "vpc" {
   subnets = [
     {
       ip_cidr_range      = local.vars.k8s.subnets.ip_cidr_range
-      name               = "gke"
+      name               = "vpc-subnet-gke-${local.suffix}"
       region             = local.vars.region
-      secondary_ip_range = local.vars.k8s.subnets.secondary_ip_range
+      secondary_ip_ranges = local.vars.k8s.subnets.secondary_ip_ranges
     }
   ]
 }
@@ -75,7 +75,7 @@ module "iap_bastion" {
   project = local.vars.project
   zone    = local.vars.zone
   network = module.vpc.network.self_link
-  subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
+  subnet  = module.vpc.subnet_self_links[keys(module.vpc.subnets)[0]]
 
   # name        = "k8s-bastion-${local.suffix}"
   # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
@@ -120,7 +120,7 @@ module "cluster" {
 
   vpc_config = {
     network    = module.vpc.self_link
-    subnetwork = module.vpc.subnet_self_links["${local.vars.region}/gke"]
+    subnetwork = module.vpc.subnet_self_links[keys(module.vpc.subnets)[0]]
     secondary_range_names = {
       pods     = "pods"
       services = "services"

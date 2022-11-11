@@ -42,3 +42,9 @@ HTTPS_PROXY=localhost:8888 kubectl get ns
 
 BASTION is output by Terraform under "iap_bastion_hostname".
 
+## Versions
+
+| Component / Tool | Version / Tag |
+| ---       | ---     |
+| Terraform | >= 1.3 |
+| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | daily-2022.11.11 |
