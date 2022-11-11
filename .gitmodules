@@ -1,3 +1,0 @@
-[submodule "tf/fabric"]
-	path = tf/fabric
-	url = https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/
