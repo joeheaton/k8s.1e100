@@ -32,6 +32,8 @@ gke:
   gvnic: true
   # Anthos Fleet Management
   hub: false
+  # Private cluster
+  private: true
   # Managed Prometheus
   prometheus: true
   # Ops Agent

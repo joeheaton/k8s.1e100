@@ -130,9 +130,12 @@ module "cluster" {
     }
   }
 
-  private_cluster_config = {
+  private_cluster_config = local.vars.gke.private == true ? {
     enable_private_endpoint = true
     master_ipv4_cidr_block  = "192.168.0.0/28"
+    master_global_access    = false
+  } : {
+    enable_private_endpoint = false
     master_global_access    = false
   }
 
