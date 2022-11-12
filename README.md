@@ -57,7 +57,14 @@ export HTTPS_PROXY=localhost:8888  # Depends on Bastion proxy
 kubectl get namespaces
 ```
 
-Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
+## ArgoCD
+
+```shell
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
+argocd login --core
+argocd cluster add $( kubectl config current-context )
+```
 
 ## Versions
 
