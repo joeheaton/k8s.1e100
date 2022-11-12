@@ -43,7 +43,10 @@ https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastio
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
 gcloud compute ssh $BASTION --tunnel-through-iap --project=$PROJECT_ID --zone=$ZONE -- -4 -L8888:localhost:8888 -N -q -f
+export HTTPS_PROXY=localhost:8888
 ```
+
+Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
 
 BASTION is output by Terraform under "iap_bastion_hostname".
 
@@ -53,7 +56,7 @@ BASTION is output by Terraform under "iap_bastion_hostname".
 
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
-export HTTPS_PROXY=localhost:8888  # Depends on Bastion proxy
+export HTTPS_PROXY=localhost:8888  # If using Bastion proxy
 kubectl get namespaces
 ```
 

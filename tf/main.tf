@@ -28,6 +28,8 @@ module "project" {
     [
       "anthosconfigmanagement.googleapis.com",
       "container.googleapis.com",
+      # TODO: Enable auditing when https://github.com/hashicorp/terraform-provider-google/issues/12778
+      # For now: Enable in https://console.cloud.google.com/kubernetes/security/dashboard
       "containersecurity.googleapis.com",
       "gkeconnect.googleapis.com",
       "gkehub.googleapis.com",
