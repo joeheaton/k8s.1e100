@@ -44,7 +44,7 @@ module "vpc" {
   subnets = [
     {
       ip_cidr_range      = local.vars.k8s.subnets.ip_cidr_range
-      name               = "vpc-subnet-gke-${local.suffix}"
+      name               = "gke"
       region             = local.vars.region
       secondary_ip_ranges = local.vars.k8s.subnets.secondary_ip_ranges
     }
