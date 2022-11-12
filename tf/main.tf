@@ -28,6 +28,7 @@ module "project" {
     [
       "anthosconfigmanagement.googleapis.com",
       "container.googleapis.com",
+      "containersecurity.googleapis.com",
       "gkeconnect.googleapis.com",
       "gkehub.googleapis.com",
       "multiclusteringress.googleapis.com",
