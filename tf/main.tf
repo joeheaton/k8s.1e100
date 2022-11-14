@@ -71,6 +71,23 @@ module "nat" {
   router_network = module.vpc.name
 }
 
+module "iap_bastion_sa" {
+  count      = local.vars.k8s.bastion == true ? 1 : 0
+  source     = "./fabric/modules/iam-service-account"
+  project_id = local.vars.project
+  name       = "k8s-bastion-sa-${local.suffix}"
+
+  iam_project_roles = {
+    "${local.vars.project}" = [
+      "roles/compute.osLogin",
+      "roles/compute.viewer",
+      "roles/logging.logWriter",
+      "roles/monitoring.metricWriter",
+      "roles/monitoring.viewer"
+    ]
+  }
+}
+
 module "iap_bastion" {
   count   = local.vars.k8s.bastion == true ? 1 : 0
   source  = "terraform-google-modules/bastion-host/google"
@@ -87,7 +104,7 @@ module "iap_bastion" {
   machine_type  = "e2-micro"
   preemptible   = true
 
-  service_account_name = "k8s-bastion-${local.suffix}"
+  service_account_email = module.iap_bastion_sa[0].email
 
   # members = [
   #   "group:devs@example.com",
