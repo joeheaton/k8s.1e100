@@ -28,6 +28,9 @@ module "project" {
     [
       "anthosconfigmanagement.googleapis.com",
       "container.googleapis.com",
+      # TODO: Enable auditing when https://github.com/hashicorp/terraform-provider-google/issues/12778
+      # For now: Enable in https://console.cloud.google.com/kubernetes/security/dashboard
+      "containersecurity.googleapis.com",
       "gkeconnect.googleapis.com",
       "gkehub.googleapis.com",
       "multiclusteringress.googleapis.com",
@@ -46,17 +49,18 @@ module "vpc" {
       ip_cidr_range      = local.vars.k8s.subnets.ip_cidr_range
       name               = "gke"
       region             = local.vars.region
-      secondary_ip_range = local.vars.k8s.subnets.secondary_ip_range
+      secondary_ip_ranges = local.vars.k8s.subnets.secondary_ip_ranges
     }
   ]
 }
 
 module "firewall" {
-  count        = local.vars.firewall_rules == {} ? 0 : 1
-  source       = "./fabric/modules/net-vpc-firewall"
-  project_id   = local.vars.project
-  network      = module.vpc.name
-  custom_rules = local.vars.firewall_rules
+  count         = local.vars.firewall == {} ? 0 : 1
+  source        = "./fabric/modules/net-vpc-firewall"
+  project_id    = local.vars.project
+  network       = module.vpc.name
+  egress_rules  = local.vars.firewall == {} ? null : local.vars.firewall.egress
+  ingress_rules = local.vars.firewall == {} ? null : local.vars.firewall.ingress
 }
 
 module "nat" {
@@ -74,7 +78,7 @@ module "iap_bastion" {
   project = local.vars.project
   zone    = local.vars.zone
   network = module.vpc.network.self_link
-  subnet  = module.vpc.subnet_self_links["${local.vars.region}/gke"]
+  subnet  = module.vpc.subnet_self_links[keys(module.vpc.subnets)[0]]
 
   # name        = "k8s-bastion-${local.suffix}"
   # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
@@ -107,7 +111,7 @@ module "iap_bastion" {
 }
 
 output "iap_bastion_hostname" {
-  value = module.iap_bastion[0].hostname
+  value = module.iap_bastion == [] ? null : module.iap_bastion[0].hostname
   description = "IAP Bastion IP hostname"
 }
 
@@ -119,7 +123,7 @@ module "cluster" {
 
   vpc_config = {
     network    = module.vpc.self_link
-    subnetwork = module.vpc.subnet_self_links["${local.vars.region}/gke"]
+    subnetwork = module.vpc.subnet_self_links[keys(module.vpc.subnets)[0]]
     secondary_range_names = {
       pods     = "pods"
       services = "services"
@@ -129,9 +133,12 @@ module "cluster" {
     }
   }
 
-  private_cluster_config = {
+  private_cluster_config = local.vars.gke.private == true ? {
     enable_private_endpoint = true
     master_ipv4_cidr_block  = "192.168.0.0/28"
+    master_global_access    = false
+  } : {
+    enable_private_endpoint = false
     master_global_access    = false
   }
 

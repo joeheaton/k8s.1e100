@@ -8,6 +8,12 @@ Copy `cluster.example.yaml` to `cluster.yaml`
 
 Setting `autopilot` to true sets/overrides settings that are required for a GKE Autopilot cluster.
 
+## Prepare
+
+```shell
+git clone --depth 1 --branch daily-2022.11.11 https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git tf/fabric
+```
+
 ## Deployment
 
 ```shell
@@ -55,8 +61,28 @@ https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastio
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
 gcloud compute ssh $BASTION --tunnel-through-iap --project=$PROJECT_ID --zone=$ZONE -- -4 -L8888:localhost:8888 -N -q -f
-HTTPS_PROXY=localhost:8888 kubectl get ns
+export HTTPS_PROXY=localhost:8888
 ```
+
+Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
 
 BASTION is output by Terraform under "iap_bastion_hostname".
 
+## Interacting with Kubernetes
+
+[Google Cloud - Install kubectl and configure cluster access](https://cloud.google.com/kubernetes-engine/docs/how-to/cluster-access-for-kubectl)
+
+```shell
+gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
+export HTTPS_PROXY=localhost:8888  # If using Bastion proxy
+kubectl get namespaces
+```
+
+Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
+
+## Versions
+
+| Component / Tool | Version / Tag |
+| ---       | ---     |
+| Terraform | >= 1.3 |
+| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | daily-2022.11.11 |

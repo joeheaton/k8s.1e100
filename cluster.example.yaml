@@ -13,12 +13,15 @@ k8s:
   # Network
   subnets:
     ip_cidr_range: "10.128.0.0/24"
-    secondary_ip_range:
+    secondary_ip_ranges:
       pods: "10.130.0.0/16"
       services: "10.132.0.0/24"
   # Config Sync
   config_sync:
     enabled: true
+  # Node count
+  node_count:
+    initial: 1
 # Google Kubernetes Engine
 gke:
   # GKE Autopilot
@@ -29,6 +32,8 @@ gke:
   gvnic: true
   # Anthos Fleet Management
   hub: false
+  # Private cluster
+  private: true
   # Managed Prometheus
   prometheus: true
   # Ops Agent
@@ -39,4 +44,6 @@ sql:
     version: "POSTGRESQL_14"
     availability_type: "ZONAL"
     flags: {}
-firewall_rules: {}
+firewall:
+  egress: {}
+  ingress: {}
