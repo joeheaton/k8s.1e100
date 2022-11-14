@@ -64,9 +64,15 @@ kubectl get namespaces
 
 ```shell
 kubectl create namespace argocd
-kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/core-install.yaml
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 argocd login --core
 argocd cluster add $( kubectl config current-context )
+```
+
+### Add repo
+
+```shell
+argocd repo add git@github.com:argoproj/argocd-example-apps.git --ssh-private-key-path ~/.ssh/machine-key
 ```
 
 ## Versions
