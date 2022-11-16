@@ -15,5 +15,5 @@ spec:
   values:
     adminUser:
       create: true
-      username: <UPDATE>
-      passwordHash: <UPDATE>
+      username: CHANGE_ME
+      passwordHash: CHANGE_ME
