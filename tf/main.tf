@@ -241,7 +241,6 @@ module "cluster" {
 
   labels = {
     deployment  = local.vars.name
-    environment = "dev"
   }
 }
 
