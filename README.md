@@ -84,7 +84,7 @@ flux bootstrap git \
 Example:
 
 ```shell
-flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main --path=clusters/dev
+flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main --path=config/clusters/dev
 ```
 
 To update Flux-system, run: `flux reconcile source git flux-system`.
