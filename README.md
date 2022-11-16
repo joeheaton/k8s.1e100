@@ -62,6 +62,33 @@ kubectl get namespaces
 
 Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
 
+## GitOps via Flux
+
+Install Flux CLI:
+
+```shell
+curl -s https://fluxcd.io/install.sh | sudo bash
+```
+
+Bootstrap Flux:
+
+[Flux installation docs](https://fluxcd.io/flux/installation/)
+
+```shell
+flux bootstrap git \
+  --url=ssh://git@GIT_HOST:GIT_USER/GIT_REPO
+  --branch=GIT_BRANCH
+  --path=PATH_TO_CONFIG
+```
+
+Example:
+
+```shell
+flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main --path=config/clusters/dev
+```
+
+To update Flux-system, run: `flux reconcile source git flux-system`.
+
 ## Versions
 
 | Component / Tool | Version / Tag |

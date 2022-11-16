@@ -1,0 +1,19 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: grafana
+      version: '6.x.x'
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: grafana
+      interval: 1m
+  values:
+    replicaCount: 1

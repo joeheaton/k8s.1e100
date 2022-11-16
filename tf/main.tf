@@ -33,6 +33,7 @@ module "project" {
       "containersecurity.googleapis.com",
       "gkeconnect.googleapis.com",
       "gkehub.googleapis.com",
+      "monitoring.googleapis.com",
       "multiclusteringress.googleapis.com",
       "multiclusterservicediscovery.googleapis.com",
       "mesh.googleapis.com"
@@ -241,7 +242,6 @@ module "cluster" {
 
   labels = {
     deployment  = local.vars.name
-    environment = "dev"
   }
 }
 
