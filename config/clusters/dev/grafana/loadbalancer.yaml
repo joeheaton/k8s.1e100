@@ -4,8 +4,6 @@ kind: Service
 metadata:
   name: grafana-lb
   namespace: grafana
-  annotations:
-    networking.gke.io/load-balancer-type: "Internal"
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
