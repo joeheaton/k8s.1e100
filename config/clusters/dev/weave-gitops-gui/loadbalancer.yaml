@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ww-gitops
+  namespace: flux-system
+spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  selector:
+    app.kubernetes.io/name: ww-gitops
+  ports:
+    - protocol: TCP
+      port: 9001
+      targetPort: 9001
