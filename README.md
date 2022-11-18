@@ -85,6 +85,18 @@ flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main 
 
 To update Flux-system, run: `flux reconcile source git flux-system`.
 
+### Flux chat notifications
+
+Flux can push messages to a chat webhook, Flux supports multiple chat providers: https://fluxcd.io/flux/guides/notifications/
+
+To enable notifications first we create a secret containing the webhook URL:
+
+```shell
+kubectl -n flux-system create secret generic flux-notify-webhook --from-literal="address=https://WEBHOOK_URL"
+```
+
+Configure the chat provider in `config/clusters/*/flux-notifications/release.yaml` by replacing `googlechat` with your provider.
+
 ## Versions
 
 | Component / Tool | Version / Tag |
