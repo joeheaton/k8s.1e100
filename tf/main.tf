@@ -193,6 +193,7 @@ module "cluster" {
       kalm                           = false
       network_policy                 = false
     },
+    local.vars.gke.autopilot == true ? {
       dns_cache                      = true
       gce_persistent_disk_csi_driver = true
       gcp_filestore_csi_driver       = true
@@ -205,7 +206,7 @@ module "cluster" {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
     l4_ilb_subsetting = true
-    workload_identity = local.vars.gke.autopilot == true ? false : true # Incompatible with autopilot
+    workload_identity = local.vars.gke.autopilot == true ? false : true  # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
@@ -216,7 +217,7 @@ module "cluster" {
 
   monitoring_config = {
     enabled_components = ["SYSTEM_COMPONENTS"]
-    managed_prometheus = local.vars.gke.prometheus ? true : false
+    managed_prometheus = local.vars.gke.prometheus == true ? true : false
   }
 
   maintenance_config = {
@@ -307,7 +308,7 @@ module "hub" {
     default = {
       binauthz = false
       config_sync = {
-        git = local.vars.gke.config_sync ? {
+        git = local.vars.gke.config_sync == true ? {
           gcp_service_account_email = null
           https_proxy               = null
           policy_dir                = "configsync"
