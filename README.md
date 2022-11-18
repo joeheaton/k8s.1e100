@@ -24,12 +24,13 @@ terraform apply
 Export helper variables locally:
 
 ```shell
-TF_SUFFIX="$( terraform output -json | jq -r '.suffix.value' )"
-CLUSTER_NAME="$( yq '.name' ../cluster.yaml )-${TF_SUFFIX}"
-PROJECT_ID="$( yq '.project' ../cluster.yaml )"
-REGION="$( yq '.region' ../cluster.yaml )"
-ZONE="$( yq '.zone' ../cluster.yaml )"
-BASTION="$( terraform output -json | jq -r '.iap_bastion_hostname.value' )"
+REPO="$( git rev-parse --show-toplevel )"
+TF_SUFFIX="$( cd ${REPO}/tf; terraform output -json | jq -r '.suffix.value' )"
+CLUSTER_NAME="$( yq '.name' ${REPO}/cluster.yaml )-${TF_SUFFIX}"
+PROJECT_ID="$( yq '.project' ${REPO}/cluster.yaml )"
+REGION="$( yq '.region' ${REPO}/cluster.yaml )"
+ZONE="$( yq '.zone' ${REPO}/cluster.yaml )"
+BASTION="$( cd ${REPO}/tf; terraform output -json | jq -r '.iap_bastion_hostname.value' )"
 ```
 
 ## Bastion
@@ -43,10 +44,8 @@ https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastio
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
 gcloud compute ssh $BASTION --tunnel-through-iap --project=$PROJECT_ID --zone=$ZONE -- -4 -L8888:localhost:8888 -N -q -f
-export HTTPS_PROXY=localhost:8888
+kubectl config set-cluster $( kubectl config current-context ) --proxy-url http://localhost:8888
 ```
-
-Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
 
 BASTION is output by Terraform under "iap_bastion_hostname".
 
@@ -56,11 +55,8 @@ BASTION is output by Terraform under "iap_bastion_hostname".
 
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
-export HTTPS_PROXY=localhost:8888  # If using Bastion proxy
 kubectl get namespaces
 ```
-
-Careful, the terminal you set `HTTPS_PROXY` won't be able to use gcloud commands once set. To unset run `unset HTTPS_PROXY`.
 
 ## GitOps via Flux
 
