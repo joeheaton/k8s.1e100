@@ -193,9 +193,9 @@ module "cluster" {
       kalm                           = false
       network_policy                 = false
     },
-    try(local.vars.gke.autopilot, null) != null ? {
+      dns_cache                      = true
       gce_persistent_disk_csi_driver = true
-      gcp_filestore_csi_driver       = false
+      gcp_filestore_csi_driver       = true
       horizontal_pod_autoscaling     = true
       http_load_balancing            = true
     } : {}
