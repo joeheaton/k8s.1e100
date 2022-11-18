@@ -55,12 +55,47 @@ module "vpc" {
   ]
 }
 
+locals {
+  istio_firewall = {
+    egress = {
+      istio-pilot-disc-egress = {
+        description        = "Istio egress for Pilot discovery validation webhook"
+        destination_ranges = null
+        rules              = [
+          {
+            ports = [10250, 443, 15017],
+            protocol = "tcp"
+          }
+        ]
+      }
+    },
+    ingress = {
+      istio-pilot-disc-ingress = {
+        description        = "Istio ingress for Pilot discovery validation webhook"
+        destination_ranges = null
+        rules              = [
+          {
+            ports = [10250, 443, 15017],
+            protocol = "tcp"
+          }
+        ]
+      }
+    }
+  }
+}
+
 module "firewall" {
   source        = "./fabric/modules/net-vpc-firewall"
   project_id    = local.vars.project
   network       = module.vpc.name
-  egress_rules  = local.vars.firewall.egress == {} ? {} : local.vars.firewall.egress
-  ingress_rules = local.vars.firewall.ingress == {} ? {} : local.vars.firewall.ingress
+  egress_rules  = merge(
+    local.vars.firewall == {} ? null : local.vars.firewall.egress,
+    local.vars.k8s.istio == true ? local.istio_firewall.egress : {}
+  )
+  ingress_rules = merge(
+    local.vars.firewall == {} ? null : local.vars.firewall.ingress,
+    local.vars.k8s.istio == true ? local.istio_firewall.ingress : {}
+  )
   # Disable module default rulesets
   default_rules_config = {
     disabled = true
