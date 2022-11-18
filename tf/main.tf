@@ -207,6 +207,7 @@ module "cluster" {
   enable_features = {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
+    l4_ilb_subsetting = true
     workload_identity = local.vars.gke.autopilot == true ? false : true # Incompatible with autopilot
   }
 
