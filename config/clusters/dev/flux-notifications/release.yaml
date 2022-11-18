@@ -1,0 +1,11 @@
+---
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Provider
+metadata:
+  name: googlechat
+  namespace: flux-system
+spec:
+  type: googlechat
+  channel: general
+  secretRef:
+    name: flux-notify-webhook
