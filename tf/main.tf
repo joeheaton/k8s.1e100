@@ -190,11 +190,8 @@ module "cluster" {
       gke_backup_agent               = false
       horizontal_pod_autoscaling     = false
       http_load_balancing            = false
-      # istio = {
-      #   enable_tls = false
-      # }
-      kalm           = false
-      network_policy = false
+      kalm                           = false
+      network_policy                 = false
     },
     try(local.vars.gke.autopilot, null) != null ? {
       gce_persistent_disk_csi_driver = true
