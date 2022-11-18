@@ -24,12 +24,13 @@ terraform apply
 Export helper variables locally:
 
 ```shell
-TF_SUFFIX="$( terraform output -json | jq -r '.suffix.value' )"
-CLUSTER_NAME="$( yq '.name' ../cluster.yaml )-${TF_SUFFIX}"
-PROJECT_ID="$( yq '.project' ../cluster.yaml )"
-REGION="$( yq '.region' ../cluster.yaml )"
-ZONE="$( yq '.zone' ../cluster.yaml )"
-BASTION="$( terraform output -json | jq -r '.iap_bastion_hostname.value' )"
+REPO="$( git rev-parse --show-toplevel )"
+TF_SUFFIX="$( cd ${REPO}/tf; terraform output -json | jq -r '.suffix.value' )"
+CLUSTER_NAME="$( yq '.name' ${REPO}/cluster.yaml )-${TF_SUFFIX}"
+PROJECT_ID="$( yq '.project' ${REPO}/cluster.yaml )"
+REGION="$( yq '.region' ${REPO}/cluster.yaml )"
+ZONE="$( yq '.zone' ${REPO}/cluster.yaml )"
+BASTION="$( cd ${REPO}/tf; terraform output -json | jq -r '.iap_bastion_hostname.value' )"
 ```
 
 ## Bastion
