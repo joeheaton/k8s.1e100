@@ -56,12 +56,15 @@ module "vpc" {
 }
 
 module "firewall" {
-  count         = local.vars.firewall == {} ? 0 : 1
   source        = "./fabric/modules/net-vpc-firewall"
   project_id    = local.vars.project
   network       = module.vpc.name
-  egress_rules  = local.vars.firewall == {} ? null : local.vars.firewall.egress
-  ingress_rules = local.vars.firewall == {} ? null : local.vars.firewall.ingress
+  egress_rules  = local.vars.firewall.egress == {} ? {} : local.vars.firewall.egress
+  ingress_rules = local.vars.firewall.ingress == {} ? {} : local.vars.firewall.ingress
+  # Disable module default rulesets
+  default_rules_config = {
+    disabled = true
+  }
 }
 
 module "nat" {
@@ -190,15 +193,13 @@ module "cluster" {
       gke_backup_agent               = false
       horizontal_pod_autoscaling     = false
       http_load_balancing            = false
-      # istio = {
-      #   enable_tls = false
-      # }
-      kalm           = false
-      network_policy = false
+      kalm                           = false
+      network_policy                 = false
     },
-    try(local.vars.gke.autopilot, null) != null ? {
+    local.vars.gke.autopilot == true ? {
+      dns_cache                      = true
       gce_persistent_disk_csi_driver = true
-      gcp_filestore_csi_driver       = false
+      gcp_filestore_csi_driver       = true
       horizontal_pod_autoscaling     = true
       http_load_balancing            = true
     } : {}
@@ -208,7 +209,7 @@ module "cluster" {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
     l4_ilb_subsetting = true
-    workload_identity = local.vars.gke.autopilot == true ? false : true # Incompatible with autopilot
+    workload_identity = local.vars.gke.autopilot == true ? false : true  # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
@@ -219,7 +220,7 @@ module "cluster" {
 
   monitoring_config = {
     enabled_components = ["SYSTEM_COMPONENTS"]
-    managed_prometheus = local.vars.gke.prometheus ? true : false
+    managed_prometheus = local.vars.gke.prometheus == true ? true : false
   }
 
   maintenance_config = {
@@ -310,7 +311,7 @@ module "hub" {
     default = {
       binauthz = false
       config_sync = {
-        git = local.vars.gke.config_sync ? {
+        git = local.vars.gke.config_sync == true ? {
           gcp_service_account_email = null
           https_proxy               = null
           policy_dir                = "configsync"
