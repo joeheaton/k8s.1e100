@@ -56,12 +56,15 @@ module "vpc" {
 }
 
 module "firewall" {
-  count         = local.vars.firewall == {} ? 0 : 1
   source        = "./fabric/modules/net-vpc-firewall"
   project_id    = local.vars.project
   network       = module.vpc.name
-  egress_rules  = local.vars.firewall == {} ? null : local.vars.firewall.egress
-  ingress_rules = local.vars.firewall == {} ? null : local.vars.firewall.ingress
+  egress_rules  = local.vars.firewall.egress == {} ? {} : local.vars.firewall.egress
+  ingress_rules = local.vars.firewall.ingress == {} ? {} : local.vars.firewall.ingress
+  # Disable module default rulesets
+  default_rules_config = {
+    disabled = true
+  }
 }
 
 module "nat" {
