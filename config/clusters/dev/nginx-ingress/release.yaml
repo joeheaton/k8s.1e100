@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: nginx-ingress
-      version: 'x.x.x'
+      version: '0.15.x'
       sourceRef:
         kind: HelmRepository
         name: nginx-ingress
