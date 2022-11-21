@@ -2,8 +2,6 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: ingress-grafana
-  annotations:
-    kubernetes.io/ingress.global-static-ip-name: helloweb-ip 
 spec:
   ingressClassName: nginx
   rules:

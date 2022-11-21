@@ -4,6 +4,8 @@ kind: HelmRelease
 metadata:
   name: nginx-ingress
   namespace: nginx-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: gke-ingress
 spec:
   interval: 5m
   chart:
