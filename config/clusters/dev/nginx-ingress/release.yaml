@@ -18,5 +18,5 @@ spec:
   values:
     controller:
       service:
-        loadBalancerIP: gke-ingress
+        loadBalancerIP: 34.149.74.246
     replicaCount: 1
