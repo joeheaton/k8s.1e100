@@ -16,9 +16,6 @@ k8s:
     secondary_ip_ranges:
       pods: "10.130.0.0/16"
       services: "10.132.0.0/24"
-  # Config Sync
-  config_sync:
-    enabled: true
   # Node count
   node_count:
     initial: 1
