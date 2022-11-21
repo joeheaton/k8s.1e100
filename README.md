@@ -58,13 +58,17 @@ kubectl get namespaces
 
 ## GitOps via Flux
 
-Install Flux CLI:
+**GitOps** is the deployment model where infrastructure and applications are managed and configured via simple YAML in Git repo.
+
+**Flux** is a Continuous Delivery platform for Kubernetes deployed using native Kubernetes resources.
+
+### Install Flux CLI
 
 ```shell
 curl -s https://fluxcd.io/install.sh | sudo bash
 ```
 
-Bootstrap Flux:
+## Bootstrap Flux with monorepo
 
 [Flux installation docs](https://fluxcd.io/flux/installation/)
 
