@@ -37,7 +37,7 @@ Bastion nodes are required for kubectl to access a private cluster from outside 
 
 For example, if you use `kubectl` on your desktop, you will need to enable the `bastion` in the configuration and run the following commands on your local machine:
 
-https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastion
+<https://cloud.google.com/kubernetes-engine/docs/tutorials/private-cluster-bastion>
 
 ```shell
 gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --project=$PROJECT_ID
@@ -85,7 +85,7 @@ To update Flux-system, run: `flux reconcile source git flux-system`.
 
 ### Flux chat notifications
 
-Flux can push messages to a chat webhook, Flux supports multiple chat providers: https://fluxcd.io/flux/guides/notifications/
+Flux can push messages to a chat webhook, Flux supports multiple chat providers: <https://fluxcd.io/flux/guides/notifications/>
 
 To enable notifications first we create a secret containing the webhook URL:
 
