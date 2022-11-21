@@ -17,3 +17,7 @@ spec:
                 name: grafana
                 port:
                   number: 80
+  tls:
+  - hosts:
+    - grafana-gke.heaton.dev
+    secretName: grafana-gke-heaton-dev
