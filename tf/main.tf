@@ -92,6 +92,19 @@ module "iap_bastion_sa" {
   }
 }
 
+module "addresses" {
+  count      = local.vars.gke.reserve_global_addresses == [] ? 0 : 1
+  source     = "./fabric/modules/net-address"
+  project_id = local.vars.project
+  
+  global_addresses = local.vars.gke.reserve_global_addresses
+}
+
+output "global_addresses" {
+  value = module.addresses == [] ? null : module.addresses[0].global_addresses
+  description = "Global IP Addresses"
+}
+
 module "iap_bastion" {
   count   = local.vars.k8s.bastion == true ? 1 : 0
   source  = "terraform-google-modules/bastion-host/google"
