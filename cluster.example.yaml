@@ -35,6 +35,8 @@ gke:
   prometheus: true
   # Ops Agent
   ops_agent: false
+  # Reserve IP Address
+  reserve_global_addresses: ["gke-ingress"]
 sql:
   psql:
     tier: "db-f1-micro"
