@@ -97,12 +97,15 @@ module "addresses" {
   source     = "./fabric/modules/net-address"
   project_id = local.vars.project
   
+  external_addresses = {
+    for x in local.vars.gke.reserve_regional_addresses : x => local.vars.region
+  }
   global_addresses = local.vars.gke.reserve_global_addresses
 }
 
-output "global_addresses" {
-  value = module.addresses == [] ? null : module.addresses[0].global_addresses
-  description = "Global IP Addresses"
+output "addresses" {
+  value = module.addresses == [] ? null : module.addresses[0]
+  description = "Addresses"
 }
 
 module "iap_bastion" {
