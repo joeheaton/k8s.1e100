@@ -72,6 +72,8 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 
 [Flux installation docs](https://fluxcd.io/flux/installation/)
 
+### Bootstrap with Git
+
 ```shell
 flux bootstrap git \
   --url=ssh://git@GIT_HOST:GIT_USER/GIT_REPO
@@ -84,6 +86,30 @@ Example:
 ```shell
 flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main --path=config/clusters/dev
 ```
+
+### Bootstrap with GitHub
+
+Flux bootstrap supports GitHub PAT (Personal Access Tokens), this example uses the [GitHub CLI](https://github.com/cli/cli#installation) to add Flux-generated deploy keys.
+
+Create a PAT 
+
+```shell
+
+flux bootstrap github \
+  --owner joeheaton \
+  --repository k8s.1e100 \
+  --branch cluster-dev \
+  --path ./config/clusters/dev/ \
+  --personal
+
+# Login to GitHub.com via Web Browser
+gh auth login -p ssh -h github.com -w
+
+# Send the key to gh
+echo KEY_GENERATED_BY_FLUX | gh repo deploy-key add -t Test -
+```
+
+### Update Flux-system
 
 To update Flux-system, run: `flux reconcile source git flux-system`.
 
