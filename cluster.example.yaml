@@ -35,7 +35,9 @@ gke:
   prometheus: true
   # Ops Agent
   ops_agent: false
-  # Reserve IP Address
+  # Reserve Regional IP Address
+  reserve_regional_addresses: ["gke-ingress-regional"]
+  # Reserve Global IP Address
   reserve_global_addresses: ["gke-ingress"]
 sql:
   psql:
