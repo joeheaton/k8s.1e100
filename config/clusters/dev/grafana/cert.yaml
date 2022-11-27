@@ -13,8 +13,8 @@ spec:
   dnsNames:
     - grafana-gke.heaton.dev
   issuerRef:
-    name: ca-issuer
-    kind: ClusterIssuer
-    group: letsencrypt-staging
+    name: letsencrypt-staging
+    kind: Issuer
+    group: cert-manager.io
   privateKey:
     rotationPolicy: Always
