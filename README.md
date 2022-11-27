@@ -125,6 +125,14 @@ kubectl -n flux-system create secret generic flux-notify-webhook --from-literal=
 
 Configure the chat provider in `config/clusters/*/flux-notifications/release.yaml` by replacing `googlechat` with your provider.
 
+## HTTPS/X.509 certificates
+
+Go to Cloudflare [API Tokens](https://dash.cloudflare.com/profile/api-tokens) and generate a token with `Zone.DNS` permissions.
+
+```shell
+kubectl -n cert-manager create secret generic cloudflare-apikey-secret --from-literal="apikey=CLOUDFLARE_KEY"
+```
+
 ## Versions
 
 | Component / Tool | Version / Tag |
