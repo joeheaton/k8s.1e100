@@ -23,12 +23,22 @@ k8s:
 gke:
   # GKE Autopilot
   autopilot: true
+  # Autoscaling
+  cluster_autoscaling:
+    cpu_limits:
+      max: 4
+      min: 1
+    mem_limits:
+      max: 8
+      min: 1
   # Anthos Config Management
   config_sync: false
   # GVNic
   gvnic: true
   # Anthos Fleet Management
   hub: false
+  # HTTP LB
+  http_load_balancing: false
   # Private cluster
   private: true
   # Managed Prometheus
@@ -39,6 +49,14 @@ gke:
   reserve_regional_addresses: ["gke-ingress-regional"]
   # Reserve Global IP Address
   reserve_global_addresses: ["gke-ingress"]
+  # Node config
+  node_config:
+    disk_size_gb: 100
+    disk_type: "pd-standard"
+    preemptible: true
+    spot: true
+  # Workload identity
+  workload_identity: true
 sql:
   psql:
     tier: "db-f1-micro"
