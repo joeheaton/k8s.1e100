@@ -18,5 +18,5 @@ spec:
   values:
     controller:
       service:
-        loadBalancerIP: 35.244.210.236
+        loadBalancerIP: 34.79.251.187
     replicaCount: 1
