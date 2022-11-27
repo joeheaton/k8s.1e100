@@ -278,7 +278,8 @@ module "nodepool-1" {
     gvnic = local.vars.gke.gvnic
     image_type = null
     kubelet_config = null
-    linux_node_config_sysctls = {}
+    # Provider bug: https://github.com/hashicorp/terraform-provider-google/issues/12584
+    # linux_node_config_sysctls = {}
     local_ssd_count = 0
     machine_type = null
     metadata = {}
@@ -286,8 +287,8 @@ module "nodepool-1" {
     preemptible = local.vars.gke.node_config.preemptible
     sandbox_config_gvisor = null
     shielded_instance_config = {
-      enable_integrity_monitoring = false
-      enable_secure_boot = false
+      enable_integrity_monitoring = null
+      enable_secure_boot = null
     }
     spot = local.vars.gke.node_config.spot
     workload_metadata_config_mode = null
