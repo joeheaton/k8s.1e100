@@ -19,6 +19,21 @@ cd tf/
 terraform apply
 ```
 
+First time only, migrate Terraform state to a remote bucket.
+
+```shell
+cat <<EOF > backend.tf
+terraform {
+  backend "gcs" {
+    bucket = "$( terraform output -json | jq -r '."state_bucket".value' )"
+    prefix = "terraform/state/bootstrap"
+  }
+}
+EOF
+
+tf init
+```
+
 Export helper variables locally:
 
 ```shell
