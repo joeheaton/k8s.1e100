@@ -92,6 +92,22 @@ module "iap_bastion_sa" {
   }
 }
 
+module "addresses" {
+  count      = local.vars.gke.reserve_global_addresses == [] ? 0 : 1
+  source     = "./fabric/modules/net-address"
+  project_id = local.vars.project
+  
+  external_addresses = {
+    for x in local.vars.gke.reserve_regional_addresses : x => local.vars.region
+  }
+  global_addresses = local.vars.gke.reserve_global_addresses
+}
+
+output "addresses" {
+  value = module.addresses == [] ? null : module.addresses[0]
+  description = "Addresses"
+}
+
 module "iap_bastion" {
   count   = local.vars.k8s.bastion == true ? 1 : 0
   source  = "terraform-google-modules/bastion-host/google"
@@ -149,6 +165,7 @@ module "cluster" {
       pods     = "pods"
       services = "services"
     }
+    master_ipv4_cidr_block   = local.vars.gke.private == true ? "192.168.0.0/28" : null
     master_authorized_ranges = {
       internal-vms = "10.0.0.0/8"
     }
@@ -156,7 +173,6 @@ module "cluster" {
 
   private_cluster_config = local.vars.gke.private == true ? {
     enable_private_endpoint = true
-    master_ipv4_cidr_block  = "192.168.0.0/28"
     master_global_access    = false
   } : {
     enable_private_endpoint = false
@@ -171,28 +187,19 @@ module "cluster" {
   # node_locations = []
 
   # Conflicts with autopilot  
-  cluster_autoscaling = local.vars.gke.autopilot == true ? null : {
-    cpu_limits = {
-      max = 4
-      min = 1
-    }
-    mem_limits = {
-      max = 8
-      min = 1
-    }
-  }
+  cluster_autoscaling = local.vars.gke.autopilot == true ? null : local.vars.gke.cluster_autoscaling
 
   # Required for Autopilot: "gce-persistent-disk-csi-driver", "horizontal-pod-autoscaling", "http-load-balancing"
   enable_addons = merge(
     {
       cloudrun                       = false
       config_connector               = false
-      dns_cache                      = false
-      gce_persistent_disk_csi_driver = false
-      gcp_filestore_csi_driver       = false
+      dns_cache                      = true
+      gce_persistent_disk_csi_driver = true
+      gcp_filestore_csi_driver       = true
       gke_backup_agent               = false
-      horizontal_pod_autoscaling     = false
-      http_load_balancing            = false
+      horizontal_pod_autoscaling     = true
+      http_load_balancing            = local.vars.gke.http_load_balancing
       kalm                           = false
       network_policy                 = false
     },
@@ -208,8 +215,8 @@ module "cluster" {
   enable_features = {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
-    l4_ilb_subsetting = true
-    workload_identity = local.vars.gke.autopilot == true ? false : true  # Incompatible with autopilot
+    l4_ilb_subsetting = local.vars.gke.http_load_balancing ? true : false
+    workload_identity = local.vars.gke.autopilot == true ? false : local.vars.gke.workload_identity  # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
@@ -258,31 +265,32 @@ module "nodepool-1" {
 
   node_count = {
     initial = local.vars.k8s.node_count.initial
-    current = local.vars.gke.autopilot == true ? null : local.vars.k8s.node_count.current
+    # current = local.vars.k8s.node_count.current
   }
 
   node_config = {
     boot_disk_kms_key = null
-    disk_size_gb = 100
-    disk_type = "pd-standard"
+    disk_size_gb = local.vars.gke.node_config.disk_size_gb
+    disk_type = local.vars.gke.node_config.disk_type
     ephemeral_ssd_count = 0
     gcfs = null
     guest_accelerator = null
     gvnic = local.vars.gke.gvnic
     image_type = null
     kubelet_config = null
-    linux_node_config_sysctls = {}
+    # Provider bug: https://github.com/hashicorp/terraform-provider-google/issues/12584
+    # linux_node_config_sysctls = {}
     local_ssd_count = 0
     machine_type = null
     metadata = {}
     min_cpu_platform = null
-    preemptible = true
+    preemptible = local.vars.gke.node_config.preemptible
     sandbox_config_gvisor = null
     shielded_instance_config = {
-      enable_integrity_monitoring = false
-      enable_secure_boot = false
+      enable_integrity_monitoring = null
+      enable_secure_boot = null
     }
-    spot = true
+    spot = local.vars.gke.node_config.spot
     workload_metadata_config_mode = null
   }
 }
