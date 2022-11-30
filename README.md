@@ -109,7 +109,6 @@ Flux bootstrap supports GitHub PAT (Personal Access Tokens), this example uses t
 [Create a GitHub PAT](https://github.com/settings/tokens).
 
 ```shell
-
 flux bootstrap github \
   --owner joeheaton \
   --repository k8s.1e100 \
@@ -153,4 +152,4 @@ kubectl -n cert-manager create secret generic cloudflare-apikey-secret --from-li
 | Component / Tool | Version / Tag |
 | ---       | ---     |
 | Terraform | >= 1.3 |
-| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | daily-2022.11.11 |
+| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | daily-2022.11.28 |
