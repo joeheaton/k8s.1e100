@@ -5,7 +5,7 @@ on:
 
 jobs:
   check_format:
-    name: Check terraform file are formatted correctly
+    name: tf-fmt
     runs-on: ubuntu-latest
     permissions:
       actions: read
