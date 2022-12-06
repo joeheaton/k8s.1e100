@@ -109,6 +109,7 @@ output "addresses" {
   description = "Addresses"
 }
 
+#tfsec:ignore:google-compute-no-public-ingress  # IAP address is public
 module "iap_bastion" {
   count   = local.vars.k8s.bastion == true ? 1 : 0
   source  = "terraform-google-modules/bastion-host/google"
