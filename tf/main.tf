@@ -154,6 +154,10 @@ output "iap_bastion_hostname" {
   description = "IAP Bastion IP hostname"
 }
 
+#tfsec:ignore:google-gke-enable-network-policy        # Network Policy always enabled with Dataplane v2, not detected by tfsec
+#tfsec:ignore:google-gke-enforce-pod-security-policy  # Pod Security Policy deprecated in 1.21 & removed in 1.25
+#tfsec:ignore:google-gke-metadata-endpoints-disabled  # Disabled by API and Fabric, not detected by tfsec
+#tfsec:ignore:google-gke-node-metadata-security       # Set workload_metadata_config_mode but not detected by tfsec
 module "cluster" {
   source     = "./fabric/modules/gke-cluster"
   project_id = local.vars.project
@@ -203,7 +207,7 @@ module "cluster" {
       horizontal_pod_autoscaling     = true
       http_load_balancing            = local.vars.gke.http_load_balancing
       kalm                           = false
-      network_policy                 = false
+      network_policy                 = true
     },
     local.vars.gke.autopilot == true ? {
       dns_cache                      = true
@@ -289,10 +293,12 @@ module "nodepool-1" {
     preemptible = local.vars.gke.node_config.preemptible
     sandbox_config_gvisor = null
     shielded_instance_config = {
-      enable_integrity_monitoring = null
-      enable_secure_boot = null
+      enable_integrity_monitoring = true
+      enable_secure_boot = true
     }
     spot = local.vars.gke.node_config.spot
+    workload_metadata_config_mode = "GKE_METADATA"
+  }
     workload_metadata_config_mode = null
   }
 }
