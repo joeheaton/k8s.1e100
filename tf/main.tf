@@ -1,5 +1,5 @@
 locals {
-  vars    = yamldecode(file("../cluster.yaml"))
+  vars   = yamldecode(file("../cluster.yaml"))
   suffix = random_id.suffix.hex
 }
 
