@@ -48,9 +48,9 @@ module "vpc" {
   name       = "${local.vars.name}-vpc-${local.suffix}"
   subnets = [
     {
-      ip_cidr_range      = local.vars.k8s.subnets.ip_cidr_range
-      name               = "gke"
-      region             = local.vars.region
+      ip_cidr_range       = local.vars.k8s.subnets.ip_cidr_range
+      name                = "gke"
+      region              = local.vars.region
       secondary_ip_ranges = local.vars.k8s.subnets.secondary_ip_ranges
     }
   ]
@@ -97,7 +97,7 @@ module "addresses" {
   count      = local.vars.gke.reserve_global_addresses == [] ? 0 : 1
   source     = "./fabric/modules/net-address"
   project_id = local.vars.project
-  
+
   external_addresses = {
     for x in local.vars.gke.reserve_regional_addresses : x => local.vars.region
   }
@@ -105,7 +105,7 @@ module "addresses" {
 }
 
 output "addresses" {
-  value = module.addresses == [] ? null : module.addresses[0]
+  value       = module.addresses == [] ? null : module.addresses[0]
   description = "Addresses"
 }
 
@@ -122,7 +122,7 @@ module "iap_bastion" {
   # name        = "k8s-bastion-${local.suffix}"
   # name_prefix = "k8s-bastion-${local.suffix}-tmpl"
   image_family  = "ubuntu-minimal-2204-lts"
-  image_project	= "ubuntu-os-cloud"
+  image_project = "ubuntu-os-cloud"
   machine_type  = "e2-micro"
   preemptible   = true
 
@@ -132,8 +132,8 @@ module "iap_bastion" {
   #   "group:devs@example.com",
   # ]
 
-  labels        = {
-    deployment  = local.vars.name
+  labels = {
+    deployment = local.vars.name
   }
 
   startup_script = <<-EOF
@@ -150,7 +150,7 @@ module "iap_bastion" {
 }
 
 output "iap_bastion_hostname" {
-  value = module.iap_bastion == [] ? null : module.iap_bastion[0].hostname
+  value       = module.iap_bastion == [] ? null : module.iap_bastion[0].hostname
   description = "IAP Bastion IP hostname"
 }
 
@@ -171,7 +171,7 @@ module "cluster" {
       pods     = "pods"
       services = "services"
     }
-    master_ipv4_cidr_block   = local.vars.gke.private == true ? "192.168.0.0/28" : null
+    master_ipv4_cidr_block = local.vars.gke.private == true ? "192.168.0.0/28" : null
     master_authorized_ranges = {
       internal-vms = "10.0.0.0/8"
     }
@@ -180,7 +180,7 @@ module "cluster" {
   private_cluster_config = local.vars.gke.private == true ? {
     enable_private_endpoint = true
     master_global_access    = false
-  } : {
+    } : {
     enable_private_endpoint = false
     master_global_access    = false
   }
@@ -222,7 +222,7 @@ module "cluster" {
     autopilot         = local.vars.gke.autopilot
     dataplane_v2      = true
     l4_ilb_subsetting = local.vars.gke.http_load_balancing ? true : false
-    workload_identity = local.vars.gke.autopilot == true ? false : local.vars.gke.workload_identity  # Incompatible with autopilot
+    workload_identity = local.vars.gke.autopilot == true ? false : local.vars.gke.workload_identity # Incompatible with autopilot
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
@@ -256,7 +256,7 @@ module "cluster" {
   }
 
   labels = {
-    deployment  = local.vars.name
+    deployment = local.vars.name
   }
 }
 
@@ -275,28 +275,28 @@ module "nodepool-1" {
   }
 
   node_config = {
-    boot_disk_kms_key = null
-    disk_size_gb = local.vars.gke.node_config.disk_size_gb
-    disk_type = local.vars.gke.node_config.disk_type
+    boot_disk_kms_key   = null
+    disk_size_gb        = local.vars.gke.node_config.disk_size_gb
+    disk_type           = local.vars.gke.node_config.disk_type
     ephemeral_ssd_count = 0
-    gcfs = null
-    guest_accelerator = null
-    gvnic = local.vars.gke.gvnic
-    image_type = null
-    kubelet_config = null
+    gcfs                = null
+    guest_accelerator   = null
+    gvnic               = local.vars.gke.gvnic
+    image_type          = null
+    kubelet_config      = null
     # Provider bug: https://github.com/hashicorp/terraform-provider-google/issues/12584
     # linux_node_config_sysctls = {}
-    local_ssd_count = 0
-    machine_type = null
-    metadata = {}
-    min_cpu_platform = null
-    preemptible = local.vars.gke.node_config.preemptible
+    local_ssd_count       = 0
+    machine_type          = null
+    metadata              = {}
+    min_cpu_platform      = null
+    preemptible           = local.vars.gke.node_config.preemptible
     sandbox_config_gvisor = null
     shielded_instance_config = {
       enable_integrity_monitoring = true
-      enable_secure_boot = true
+      enable_secure_boot          = true
     }
-    spot = local.vars.gke.node_config.spot
+    spot                          = local.vars.gke.node_config.spot
     workload_metadata_config_mode = "GKE_METADATA"
   }
 
@@ -342,7 +342,7 @@ module "hub" {
           sync_repo                 = "https://github.com/joeheaton/k8s.1e100"
           sync_rev                  = null
           sync_wait_secs            = null
-        } : {
+          } : {
           gcp_service_account_email = null
           https_proxy               = null
           policy_dir                = null
