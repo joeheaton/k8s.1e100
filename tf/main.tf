@@ -299,7 +299,12 @@ module "nodepool-1" {
     spot = local.vars.gke.node_config.spot
     workload_metadata_config_mode = "GKE_METADATA"
   }
-    workload_metadata_config_mode = null
+
+  nodepool_config = {
+    management = {
+      auto_repair  = true
+      auto_upgrade = true
+    }
   }
 }
 
