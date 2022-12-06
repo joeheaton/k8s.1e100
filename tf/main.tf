@@ -41,6 +41,7 @@ module "project" {
   ))
 }
 
+#tfsec:ignore:google-compute-enable-vpc-flow-logs  # Optional
 module "vpc" {
   source     = "./fabric/modules/net-vpc"
   project_id = local.vars.project
