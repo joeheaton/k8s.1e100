@@ -33,7 +33,10 @@ flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main 
 
 Flux bootstrap supports GitHub PAT (Personal Access Tokens), this example uses the [GitHub CLI](https://github.com/cli/cli#installation) to add Flux-generated deploy keys.
 
-[Create a GitHub PAT](https://github.com/settings/tokens).
+[Create a GitHub PAT](https://github.com/settings/tokens) with the Repository Permissions:
+
+- `Administration: Read/Write`
+- `Contents: Read/Write`.
 
 ```shell
 flux bootstrap github \
