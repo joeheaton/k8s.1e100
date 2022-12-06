@@ -2,6 +2,9 @@ name: tfsec
 
 on:
   pull_request:
+    paths:
+      - .github/workflows/tfsec.yaml
+      - "tf/**.tf"
 
 jobs:
   tfsec:

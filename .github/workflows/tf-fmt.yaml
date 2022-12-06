@@ -2,6 +2,9 @@ name: tf-fmt
 
 on:
   pull_request:
+    paths:
+      - .github/workflows/tf-fmt.yaml
+      - "tf/**.tf"
 
 jobs:
   check_format:
