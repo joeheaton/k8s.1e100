@@ -5,4 +5,3 @@ namespace: flux-system
 resources:
   - release.yaml
   - source.yaml
-  - loadbalancer.yaml
