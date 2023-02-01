@@ -187,7 +187,7 @@ module "cluster" {
 
   # max_pods_per_node = 110
   # min_master_version = null  # defaults to latest official release
-  release_channel = "REGULAR"
+  release_channel = local.vars.gke.release_channel
 
   # Cannot contain the cluster's zone
   # node_locations = []
@@ -335,11 +335,11 @@ module "hub" {
         git = local.vars.gke.config_sync == true ? {
           gcp_service_account_email = null
           https_proxy               = null
-          policy_dir                = "configsync"
+          policy_dir                = local.vars.k8s.gitops.directory
           secret_type               = "none"
           source_format             = "hierarchy"
-          sync_branch               = "main"
-          sync_repo                 = "https://github.com/joeheaton/k8s.1e100"
+          sync_branch               = local.vars.k8s.gitops.branch
+          sync_repo                 = local.vars.k8s.gitops.repo
           sync_rev                  = null
           sync_wait_secs            = null
           } : {
