@@ -178,10 +178,10 @@ module "cluster" {
   }
 
   private_cluster_config = local.vars.gke.private == true ? {
-    enable_private_endpoint = true
+    enable_private_endpoint = true # Cannot change once cluster is created
     master_global_access    = false
     } : {
-    enable_private_endpoint = false
+    enable_private_endpoint = false # Cannot change once cluster is created
     master_global_access    = false
   }
 
