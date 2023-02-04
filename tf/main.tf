@@ -94,7 +94,7 @@ module "iap_bastion_sa" {
 }
 
 module "addresses" {
-  count      = local.vars.gke.reserve_global_addresses == [] ? 0 : 1
+  count = concat(local.vars.gke.reserve_regional_addresses, local.vars.gke.reserve_global_addresses) == [] ? 0 : 1
   source     = "./fabric/modules/net-address"
   project_id = local.vars.project
 
