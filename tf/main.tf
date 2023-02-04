@@ -262,7 +262,7 @@ module "cluster" {
 
 # Autopilot does not support mutating nodepools
 module "nodepool-1" {
-  count        = local.vars.gke.autopilot == false ? 1 : 0
+  count        = local.vars.gke.autopilot == true ? 0 : 1
   source       = "./fabric/modules/gke-nodepool"
   project_id   = local.vars.project
   cluster_name = module.cluster.name
