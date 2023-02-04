@@ -12,6 +12,8 @@ curl -s https://fluxcd.io/install.sh | sudo bash
 
 ## Bootstrap Flux with monorepo
 
+Create a repo dedicated to your Kubernetes cluster manifests.
+
 [Flux installation docs](https://fluxcd.io/flux/installation/)
 
 ### Bootstrap with Git
