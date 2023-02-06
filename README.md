@@ -69,6 +69,8 @@ gcloud compute ssh $BASTION --tunnel-through-iap --project=$PROJECT_ID --zone=$Z
 kubectl config set-cluster $( kubectl config current-context ) --proxy-url http://localhost:8888
 ```
 
+To start a preempted bastion node run: `gcloud compute instances start bastion-vm --project $PROJECT_ID`
+
 BASTION is output by Terraform under "iap_bastion_hostname".
 
 ## Interacting with Kubernetes
