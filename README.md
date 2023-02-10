@@ -84,6 +84,7 @@ kubectl get namespaces
 
 ## More
 
+- [Autopilot](docs/autopilot.md)
 - [Flux](docs/flux.md)
 - [Cert Manager](docs/cert-manager.md)
 - [MicroK8S](docs/microk8s.md)
