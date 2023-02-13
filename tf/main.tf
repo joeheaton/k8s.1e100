@@ -233,7 +233,7 @@ module "cluster" {
 
   monitoring_config = {
     enabled_components = ["SYSTEM_COMPONENTS"]
-    managed_prometheus = local.vars.gke.prometheus == true ? true : false
+    managed_prometheus = local.vars.gke.prometheus
   }
 
   maintenance_config = {
