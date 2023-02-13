@@ -64,12 +64,25 @@ gke:
     spot: true
   # Workload identity
   workload_identity: true
-sql:
-  psql:
-    tier: "db-f1-micro"
-    version: "POSTGRESQL_14"
-    availability_type: "ZONAL"
-    flags: {}
 firewall:
   egress: {}
   ingress: {}
+sql:
+  main:
+    availability_type: "ZONAL"
+    deletion_protection: true
+    flags: null
+    backup_configuration:
+      enabled: false
+      binary_log_enabled: false
+      start_time: "23:00"
+      location: null
+      log_retention_days: 7
+      retention_count: 7
+    databases: null
+    replicas: null
+      # region: europe-west1
+      # encryption_key_name: ""
+    tier: "db-f1-micro"
+    users: null
+    version: "POSTGRES_14"

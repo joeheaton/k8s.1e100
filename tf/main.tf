@@ -36,7 +36,7 @@ module "project" {
       "monitoring.googleapis.com",
       "multiclusteringress.googleapis.com",
       "multiclusterservicediscovery.googleapis.com",
-      "mesh.googleapis.com"
+      "servicenetworking.googleapis.com",
     ]
   ))
 }
@@ -54,6 +54,7 @@ module "vpc" {
       secondary_ip_ranges = local.vars.k8s.subnets.secondary_ip_ranges
     }
   ]
+  psa_config = local.vars.k8s.vpc_psa
 }
 
 module "firewall" {
