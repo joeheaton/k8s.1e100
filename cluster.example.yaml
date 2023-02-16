@@ -19,6 +19,11 @@ k8s:
   # Node count
   node_count:
     initial: 1
+  # GitOps cluster config
+  gitops:
+    branch: main
+    directory: /
+    repo: "https://github.com/joeheaton/k8s.1e100"
 # Google Kubernetes Engine
 gke:
   # GKE Autopilot
@@ -45,10 +50,12 @@ gke:
   prometheus: true
   # Ops Agent
   ops_agent: false
+  # Release Channel: STABLE, REGULAR, RAPID
+  release_channel: REGULAR
   # Reserve Regional IP Address
   reserve_regional_addresses: ["gke-ingress-regional"]
   # Reserve Global IP Address
-  reserve_global_addresses: ["gke-ingress"]
+  reserve_global_addresses: ["gke-ingress-global"]
   # Node config
   node_config:
     disk_size_gb: 100
@@ -57,12 +64,25 @@ gke:
     spot: true
   # Workload identity
   workload_identity: true
-sql:
-  psql:
-    tier: "db-f1-micro"
-    version: "POSTGRESQL_14"
-    availability_type: "ZONAL"
-    flags: {}
 firewall:
   egress: {}
   ingress: {}
+sql:
+  main:
+    availability_type: "ZONAL"
+    deletion_protection: true
+    flags: null
+    backup_configuration:
+      enabled: false
+      binary_log_enabled: false
+      start_time: "23:00"
+      location: null
+      log_retention_days: 7
+      retention_count: 7
+    databases: null
+    replicas: null
+      # region: europe-west1
+      # encryption_key_name: ""
+    tier: "db-f1-micro"
+    users: null
+    version: "POSTGRES_14"

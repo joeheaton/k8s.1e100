@@ -8,8 +8,17 @@ Copy `cluster.example.yaml` to `cluster.yaml`, disable features by setting to em
 
 ## Prepare
 
+Clone Clound Foundation Fabric Terraform modules:
+
 ```shell
-git clone --depth 1 --branch daily-2022.11.11 https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git tf/fabric
+git clone --depth 1 --branch v19.0.0 https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git tf/fabric
+```
+
+Update modules:
+
+```shell
+git fetch --tags
+git checkout tags/v19.0.0
 ```
 
 ## Deployment
@@ -60,6 +69,8 @@ gcloud compute ssh $BASTION --tunnel-through-iap --project=$PROJECT_ID --zone=$Z
 kubectl config set-cluster $( kubectl config current-context ) --proxy-url http://localhost:8888
 ```
 
+To start a preempted bastion node run: `gcloud compute instances start bastion-vm --project $PROJECT_ID`
+
 BASTION is output by Terraform under "iap_bastion_hostname".
 
 ## Interacting with Kubernetes
@@ -71,85 +82,16 @@ gcloud container clusters get-credentials $CLUSTER_NAME --region=$REGION --proje
 kubectl get namespaces
 ```
 
-## GitOps via Flux
+## More
 
-**GitOps** is the deployment model where infrastructure and applications are managed and configured via simple YAML in Git repo.
-
-**Flux** is a Continuous Delivery platform for Kubernetes deployed using native Kubernetes resources.
-
-### Install Flux CLI
-
-```shell
-curl -s https://fluxcd.io/install.sh | sudo bash
-```
-
-## Bootstrap Flux with monorepo
-
-[Flux installation docs](https://fluxcd.io/flux/installation/)
-
-### Bootstrap with Git
-
-```shell
-flux bootstrap git \
-  --url=ssh://git@GIT_HOST:GIT_USER/GIT_REPO
-  --branch=GIT_BRANCH
-  --path=PATH_TO_CONFIG
-```
-
-Example:
-
-```shell
-flux bootstrap git --url=ssh://git@github.com/joeheaton/k8s.1e100 --branch=main --path=config/clusters/dev
-```
-
-### Bootstrap with GitHub
-
-Flux bootstrap supports GitHub PAT (Personal Access Tokens), this example uses the [GitHub CLI](https://github.com/cli/cli#installation) to add Flux-generated deploy keys.
-
-[Create a GitHub PAT](https://github.com/settings/tokens).
-
-```shell
-flux bootstrap github \
-  --owner joeheaton \
-  --repository k8s.1e100 \
-  --branch cluster-dev \
-  --path ./config/clusters/dev/ \
-  --personal
-
-# Login to GitHub.com via Web Browser
-gh auth login -p ssh -h github.com -w
-
-# Send the key to gh
-echo KEY_GENERATED_BY_FLUX | gh repo deploy-key add -t Test -
-```
-
-### Update Flux-system
-
-To update Flux-system, run: `flux reconcile source git flux-system`.
-
-### Flux chat notifications
-
-Flux can push messages to a chat webhook, Flux supports multiple chat providers: <https://fluxcd.io/flux/guides/notifications/>
-
-To enable notifications first we create a secret containing the webhook URL:
-
-```shell
-kubectl -n flux-system create secret generic flux-notify-webhook --from-literal="address=https://WEBHOOK_URL"
-```
-
-Configure the chat provider in `config/clusters/*/flux-notifications/release.yaml` by replacing `googlechat` with your provider.
-
-## HTTPS/X.509 certificates
-
-Go to Cloudflare [API Tokens](https://dash.cloudflare.com/profile/api-tokens) and generate a token with `Zone.DNS` permissions.
-
-```shell
-kubectl -n cert-manager create secret generic cloudflare-apikey-secret --from-literal="apikey=CLOUDFLARE_KEY"
-```
+- [Autopilot](docs/autopilot.md)
+- [Flux](docs/flux.md)
+- [Cert Manager](docs/cert-manager.md)
+- [MicroK8S](docs/microk8s.md)
 
 ## Versions
 
 | Component / Tool | Version / Tag |
 | ---       | ---     |
 | Terraform | >= 1.3 |
-| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | daily-2022.11.28 |
+| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | v19.0.0 |

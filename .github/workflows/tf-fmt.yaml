@@ -1,0 +1,24 @@
+name: tf-fmt
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/tf-fmt.yaml
+      - "tf/**.tf"
+
+jobs:
+  check_format:
+    name: tf-fmt
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+
+    steps:
+      - name: Clone repo
+        uses: actions/checkout@v3
+
+      - name: Run terraform fmt
+        uses: dflook/terraform-fmt-check@v1
+        with:
+          path: tf

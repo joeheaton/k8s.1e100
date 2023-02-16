@@ -1,8 +1,8 @@
 # Ops Agent on all VMs
 module "ops_agent_policy" {
-  count      = local.vars.gke.ops_agent == true ? 1 : 0
-  source     = "terraform-google-modules/cloud-operations/google//modules/agent-policy"
-  version    = "~> 0.2.3"
+  count   = local.vars.gke.ops_agent == true ? 1 : 0
+  source  = "terraform-google-modules/cloud-operations/google//modules/agent-policy"
+  version = "~> 0.2.3"
 
   project_id = local.vars.project
   policy_id  = "ops-agents-${local.vars.name}"
@@ -16,19 +16,19 @@ module "ops_agent_policy" {
   ]
   os_types = [
     {
-        short_name = "centos"
+      short_name = "centos"
     },
     {
-        short_name = "debian"
+      short_name = "debian"
     },
     {
-        short_name = "rhel"
+      short_name = "rhel"
     },
     {
-        short_name = "sles"
+      short_name = "sles"
     },
     {
-        short_name = "ubuntu"
+      short_name = "ubuntu"
     }
   ]
   group_labels = [
