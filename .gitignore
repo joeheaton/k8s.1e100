@@ -1,5 +1,6 @@
 # Project
 cluster.yaml
+backend.tf
 
 # Local .terraform directories
 **/.terraform/*
