@@ -25,18 +25,28 @@ module "project" {
       "oslogin.googleapis.com",
       "storage-api.googleapis.com"
     ] : [],
+    local.vars.sql == null ? [] : [
+      "sqladmin.googleapis.com"
+    ],
     [
       "anthosconfigmanagement.googleapis.com",
+      "cloudresourcemanager.googleapis.com",
+      "compute.googleapis.com",
       "container.googleapis.com",
       # TODO: Enable auditing when https://github.com/hashicorp/terraform-provider-google/issues/12778
       # For now: Enable in https://console.cloud.google.com/kubernetes/security/dashboard
       "containersecurity.googleapis.com",
       "gkeconnect.googleapis.com",
       "gkehub.googleapis.com",
+      "iap.googleapis.com",
+      "mesh.googleapis.com",
       "monitoring.googleapis.com",
       "multiclusteringress.googleapis.com",
       "multiclusterservicediscovery.googleapis.com",
+      "oslogin.googleapis.com",
       "servicenetworking.googleapis.com",
+      "serviceusage.googleapis.com",
+      "storage-api.googleapis.com",
     ]
   ))
 }
