@@ -200,7 +200,7 @@ module "cluster" {
   enable_addons = merge(
     {
       cloudrun                       = false
-      config_connector               = false
+      config_connector               = local.vars.gke.config_connector
       dns_cache                      = true
       gce_persistent_disk_csi_driver = true
       gcp_filestore_csi_driver       = true

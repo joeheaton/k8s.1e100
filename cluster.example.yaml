@@ -36,6 +36,8 @@ gke:
     mem_limits:
       max: 8
       min: 1
+  # Anthos Config Connector (requires: hub)
+  config_connector: false
   # Anthos Config Management
   config_sync: false
   # GVNic
