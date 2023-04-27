@@ -11,14 +11,14 @@ Copy `cluster.example.yaml` to `cluster.yaml`, disable features by setting to em
 Clone Clound Foundation Fabric Terraform modules:
 
 ```shell
-git clone --depth 1 --branch v19.0.0 https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git tf/fabric
+git clone --depth 1 --branch v21.0.0 https://github.com/GoogleCloudPlatform/cloud-foundation-fabric.git tf/fabric
 ```
 
 Update modules:
 
 ```shell
 git fetch --tags
-git checkout tags/v19.0.0
+git checkout tags/v21.0.0
 ```
 
 ## Deployment
@@ -94,4 +94,4 @@ kubectl get namespaces
 | Component / Tool | Version / Tag |
 | ---       | ---     |
 | Terraform | >= 1.3 |
-| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | v19.0.0 |
+| [Fabric modules](https://github.com/GoogleCloudPlatform/cloud-foundation-fabric/) | v21.0.0 |
