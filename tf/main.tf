@@ -80,6 +80,7 @@ module "firewall" {
 }
 
 module "nat" {
+  count          = local.vars.k8s.nat == true ? 1 : 0
   source         = "./fabric/modules/net-cloudnat"
   project_id     = local.vars.project
   region         = local.vars.region
