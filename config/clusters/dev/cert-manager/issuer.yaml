@@ -1,0 +1,28 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: noreply@heaton.dev
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - http01:
+          ingress:
+            class: nginx
+      - dns01:
+          cloudflare:
+            email: noreply@heaton.dev
+            apiKeySecretRef:
+              name: cloudflare-apikey-secret
+              key: apikey
+          # cloudDNS:
+          #   project: my-project
+          #   serviceAccountSecretRef:
+          #     name: prod-clouddns-svc-acct-secret
+          #     key: service-account.json
+        selector:
+          matchLabels:
+            "use-cloudflare-solver": "true"
