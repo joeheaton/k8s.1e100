@@ -25,6 +25,7 @@ git checkout tags/v21.0.0
 
 ```shell
 cd tf/
+terraform init
 terraform apply
 ```
 
