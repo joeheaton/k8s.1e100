@@ -6,15 +6,19 @@
 
 ## Install Flux CLI
 
+[Flux installation docs](https://fluxcd.io/flux/installation/)
+
 ```shell
-curl -s https://fluxcd.io/install.sh | sudo bash
+FLUX_VERSION="2.0.0-rc.1"
+wget -nv https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_linux_amd64.tar.gz
+wget -nv https://github.com/fluxcd/flux2/releases/download/v${FLUX_VERSION}/flux_${FLUX_VERSION}_checksums.txt
+shasum --ignore-missing -c flux_${FLUX_VERSION}_checksums.txt && \
+tar -C ${HOME}/.local/bin -xf flux_${FLUX_VERSION}_linux_amd64.tar.gz
 ```
 
 ## Bootstrap Flux with monorepo
 
 Create a repo dedicated to your Kubernetes cluster manifests.
-
-[Flux installation docs](https://fluxcd.io/flux/installation/)
 
 ### Bootstrap with Git
 
