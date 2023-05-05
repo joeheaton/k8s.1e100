@@ -2,6 +2,9 @@
 cluster*.yaml
 backend.tf
 
+# VSCode
+.vscode/
+
 # Local .terraform directories
 **/.terraform/*
 
