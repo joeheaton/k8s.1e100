@@ -53,6 +53,8 @@ PROJECT_ID="$( yq '.project' ${REPO}/cluster.yaml )"
 REGION="$( yq '.region' ${REPO}/cluster.yaml )"
 ZONE="$( yq '.zone' ${REPO}/cluster.yaml )"
 BASTION="$( cd ${REPO}/tf; terraform output -json | jq -r '.iap_bastion_hostname.value' )"
+
+( set -o posix ; set ) | egrep '^(REPO|TF_SUFFIX|CLUSTER_NAME|PROJECT_ID|REGION|ZONE|BASTION)='
 ```
 
 ## Bastion
