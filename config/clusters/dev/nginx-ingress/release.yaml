@@ -14,4 +14,9 @@ spec:
         name: nginx-ingress
         namespace: nginx-ingress
       interval: 1m
+  values:
+    controller:
+      service:
+        # Value derrived from gke-ingress-regional
+        loadBalancerIP: 34.22.255.106
     replicaCount: 1
