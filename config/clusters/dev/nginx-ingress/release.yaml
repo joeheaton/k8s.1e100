@@ -20,3 +20,10 @@ spec:
         # Value derrived from gke-ingress-regional
         loadBalancerIP: 34.22.255.106
     replicaCount: 1
+    resources:
+      limits:
+        cpu: 0.5
+        memory: 512Mi
+      requests:
+        cpu: 0.25
+        memory: 512Mi
