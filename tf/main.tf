@@ -255,9 +255,10 @@ module "cluster" {
     recurring_window        = local.vars.gke.maintenance_config.recurring_window
   }
 
-  labels = {
-    deployment = local.vars.name
-  }
+  labels = merge(
+    { deployment = local.vars.name },
+    local.vars.gke.labels,
+  )
 }
 
 # Autopilot does not support mutating nodepools
