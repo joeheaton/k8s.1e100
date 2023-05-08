@@ -242,10 +242,7 @@ module "cluster" {
   }
 
   # Autopilot requires both SYSTEM_COMPONENTS and WORKLOADS
-  logging_config = distinct(concat(
-    local.vars.gke.autopilot == true ? ["SYSTEM_COMPONENTS", "WORKLOADS"] : [],
-    ["SYSTEM_COMPONENTS", "WORKLOADS"]
-  ))
+  logging_config = ["SYSTEM_COMPONENTS", "WORKLOADS"]
 
   monitoring_config = {
     enabled_components = ["SYSTEM_COMPONENTS"]
