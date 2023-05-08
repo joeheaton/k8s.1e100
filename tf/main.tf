@@ -262,24 +262,24 @@ module "cluster" {
 }
 
 # Autopilot does not support mutating nodepools
-module "nodepool-1" {
-  count        = local.vars.gke.autopilot == true ? 0 : 1
+module "nodepools" {
+  for_each     = local.vars.gke.node_pools
   source       = "./fabric/modules/gke-nodepool"
   project_id   = local.vars.project
   cluster_name = module.cluster.name
   location     = local.vars.region
-  name         = "nodepool-1"
+  name         = each.value.name
 
   node_count = {
-    initial = local.vars.k8s.node_count.initial
+    initial = each.value.node_count.initial
     # current = local.vars.k8s.node_count.current
   }
 
   node_config = {
     boot_disk_kms_key   = null
-    disk_size_gb        = local.vars.gke.node_config.disk_size_gb
-    disk_type           = local.vars.gke.node_config.disk_type
-    ephemeral_ssd_count = 0
+    disk_size_gb        = each.value.node_config.disk_size_gb
+    disk_type           = each.value.node_config.disk_type
+    ephemeral_ssd_count = null
     gcfs                = null
     guest_accelerator   = null
     gvnic               = local.vars.gke.gvnic
@@ -291,21 +291,20 @@ module "nodepool-1" {
     machine_type          = null
     metadata              = {}
     min_cpu_platform      = null
-    preemptible           = local.vars.gke.node_config.preemptible
+    preemptible           = each.value.node_config.preemptible
     sandbox_config_gvisor = null
     shielded_instance_config = {
       enable_integrity_monitoring = true
       enable_secure_boot          = true
     }
-    spot                          = local.vars.gke.node_config.spot
+    spot                          = each.value.node_config.spot
     workload_metadata_config_mode = "GKE_METADATA"
   }
 
   nodepool_config = {
-    management = {
-      auto_repair  = true
-      auto_upgrade = true
-    }
+    autoscaling      = each.value.nodepool_config.autoscaling
+    management       = each.value.nodepool_config.management
+    upgrade_settings = each.value.nodepool_config.upgrade_settings
   }
 }
 
