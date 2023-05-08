@@ -222,7 +222,8 @@ module "cluster" {
       horizontal_pod_autoscaling     = true
       http_load_balancing            = local.vars.gke.http_load_balancing
       kalm                           = false
-      network_policy                 = true
+      # Dataplane v2 supports native Kubernetes Network Policy 
+      network_policy                 = false
     },
     local.vars.gke.autopilot == true ? {
       dns_cache                      = true
