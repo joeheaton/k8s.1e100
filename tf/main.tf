@@ -251,21 +251,8 @@ module "cluster" {
 
   maintenance_config = {
     daily_window_start_time = "03:00"
-
-    maintenance_excluisions = []
-    # maintenance_exclusions = [ {
-    #   end_time = "value"
-    #   name = "value"
-    #   scope = "value"
-    #   start_time = "value"
-    # } ]
-
-    recurring_window = null
-    # recurring_window = {
-    #   end_time = "value"
-    #   recurrence = "value"
-    #   start_time = "value"
-    # }
+    maintenance_excluisions = local.vars.gke.maintenance_config.maintenance_exclusions
+    recurring_window        = local.vars.gke.maintenance_config.recurring_window
   }
 
   labels = {
