@@ -200,9 +200,9 @@ module "cluster" {
     master_global_access    = false
   }
 
-  # max_pods_per_node = 110
-  # min_master_version = null  # defaults to latest official release
-  release_channel = local.vars.gke.release_channel
+  max_pods_per_node  = local.vars.k8s.max_pods_per_node
+  min_master_version = null # defaults to latest official release
+  release_channel    = local.vars.gke.release_channel
 
   # Cannot contain the cluster's zone
   # node_locations = []
